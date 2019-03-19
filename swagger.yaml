@@ -1,0 +1,468 @@
+swagger: '2.0'
+info:
+  description: 'Webservice documentation for the LCA Collaboration Server'
+  version: '1.1.1'
+  title: 'LCA Collaboration Server Webservice'
+  contact:
+    email: 'greve@greendelta.com'
+host: 'data.openlca.org'
+schemes:
+- https
+- http
+parameters:
+  group:
+    name: 'group'
+    description: 'The group of the repository'
+    in: path
+    type: string
+    required: true
+  repo:
+    name: 'repo'
+    description: 'The name of the repository'
+    in: path
+    type: string
+    required: true
+  type:
+    name: 'type'
+    description: 'The model type of the data set'
+    in: path
+    type: string
+    required: true
+  refId:
+    name: 'refId'
+    description: 'The reference id of the data set'
+    in: path
+    type: string
+    required: true
+  commitId:
+    name: 'commitId'
+    description: 'The commit id for the data set (or latest before)'
+    in: query
+    type: string
+definitions:
+  ModelType:
+    type: string
+    enum: &MODEL_TYPE
+      - ACTOR
+      - CATEGORY
+      - CURRENCY
+      - DQ_SYSTEM
+      - FLOW
+      - FLOW_PROPERTY
+      - IMPACT_CATEGORY
+      - IMPACT_METHOD
+      - LOCATION
+      - NW_SET
+      - PARAMETER
+      - PROCESS
+      - PRODUCT_SYSTEM
+      - PROJECT
+      - SOURCE
+      - UNIT
+      - UNIT_GROUP
+      - SOCIAL_INDICATOR
+  Credentials:
+    type: object
+    properties:
+      username:
+        type: string
+        example: 'john.doe'
+      password:
+        type: string
+        example: 'passw0rd'
+      token:
+        description: 'If two factor authentication is enabled, a token has to be provided'
+        type: string
+        example: '435163'
+    required:
+      - username
+      - password
+  UserDescriptor:
+    type: object
+    properties:
+      username:
+        type: string
+        example: 'johndoe'
+      name:
+        type: string
+        example: 'John Doe'
+  User:
+    allOf: 
+    - $ref: '#/definitions/UserDescriptor'
+    properties:
+      id: 
+        type: string
+        example: '15'
+      username:
+        type: string
+        example: 'johndoe'
+      name:
+        type: string
+        example: 'John Doe'
+      email:
+        type: string
+        example: 'john.doe@company.com'
+      twoFactorAuth:
+        description: 'True if two factor authentication is enabled for the user'
+        type: boolean
+        default: false
+      settings:
+        $ref: '#/definitions/UserSettings'
+  UserSettings:
+    type: object
+    properties:
+      canCreateGroups:
+        type: boolean
+      canCreateRepositories:
+        type: boolean
+      noOfRepositories:
+        description: '0 for unlimited (if canCreateRepositories is true), otherwise the number of repositories the user is allowed to create'
+        type: integer
+        format: int32
+      maxSize:
+        description: '0 for unlimited space (if canCreateRepositories is true), otherwise the maximum size of all user group repositories in bytes'
+        type: integer
+        format: int64
+      messagingEnabled:
+        description: 'If true all users can initiate conversations, otherwise admins only'
+        type: boolean
+      messagingRestricted:
+        description: 'If true only team members (and admins) can initiate conversations'
+        type: boolean
+      showOnlineStatus:
+        type: boolean
+      showReadReceipt:
+        type: boolean
+      admin:
+        type: boolean
+      userManager:
+        type: boolean
+      dataManager:
+        type: boolean
+      blockedUsers:
+        type: array
+        items:
+          $ref: '#/definitions/UserDescriptor'
+  CurrentUser:
+    allOf: 
+    - $ref: '#/definitions/User'
+    - properties:
+        noOfTasks:
+          description: 'Total number of active tasks'
+          type: integer
+          format: int32
+        noOfRepositories:
+          description: 'Total number of repositories in this users user group'
+          type: integer
+          format: int32
+  FileReference:
+    type: object
+    properties:
+      type:
+        description: 'The model type of the data set'
+        type: string
+        enum: *MODEL_TYPE
+        example: 'ACTOR'
+      refId: 
+        description: 'The reference id of the data set'
+        type: string
+        example: '64b169d2-7d05-4c69-a5a0-90782d874ed2'
+    required:
+      - type
+      - refId
+  Dataset:
+    allOf: 
+    - $ref: '#/definitions/FileReference'
+    - properties:
+        name:
+          description: 'The name of the data set'
+          type: string
+          example: 'John Doe'
+        version:
+          description: 'The version of the data set, containing Major, Minor, Update version (Major.Minor.Update)'
+          type: string
+          example: '1.2.1'
+        lastChange:
+          description: 'The date of the last change to the data set, specified in milliseconds since 1/1/1970'
+          type: integer
+          format: int64
+          example: '1552993525562'
+        categoryRefId:
+          description: 'The reference id of the category of the data set'
+          type: string
+          example: '34c253f2-057d-a05a-694c-2d89078724ed'
+        categoryType:
+          description: 'If this data set is of type CATEGORY, the categoryType specified for which type of data set this category is for'
+          type: string
+          enum: *MODEL_TYPE
+          example: 'ACTOR'
+        categories:
+          description: 'The category path as array'
+          type: array
+          items:
+            type: string
+          example: ['Elementary flows', 'Resource', 'Unspecified']
+    required:
+      - name
+      - version
+      - lastChange
+  FetchRequestData:
+    allOf: 
+    - $ref: '#/definitions/Dataset'
+    - properties:
+        deleted:
+          description: 'Indicates if the data set was deleted in the last commit'
+          type: boolean
+          default: false
+        added:
+          description: 'Indicates if the data set was added in the last commit'
+          type: boolean
+          default: false
+responses:
+  NoReadPerm:
+    description: 'No permission to READ on {group}/{repo}'
+  NoWritePerm:
+    description: 'No permission to WRITE on {group}/{repo}'
+  RepoNotFound:
+    description: 'Repository {group}/{repo} not found'
+  UnsupportedSchema:
+    description: 'Unsupported json schema version'
+paths:
+  /ws/public:
+    get:
+      tags:
+      - 'Session'
+      summary: 'Get current user'
+      description: 'Get the currently logged in user'
+      operationId: 'getCurrentUser'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the currently logged in user or empty user if not logged in'
+          schema:
+            $ref: '#/definitions/CurrentUser'
+  /ws/public/login:
+    post:
+      tags:
+      - 'Session'
+      summary: 'Login'
+      description: 'Logs in with the given credentials'
+      operationId: 'login'
+      consumes:
+      - application/json
+      produces:
+      - text/plain
+      parameters:
+      - name: 'body'
+        description: 'Login credentails'
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Credentials'
+      responses:
+        200:
+          description: 'Login successful or "tokenRequired" (if two factor authentication is enabled an no token is provided)'
+        401:
+          description: 'Invalid credentials/Invalid token'
+        403:
+          description: 'Server is in maintenance mode (if not admin)'
+        409:
+          description: 'Already authenticated'
+  /ws/public/logout:
+    post:
+      tags:
+      - 'Session'
+      summary: 'Logout'
+      description: 'Logs out the currently logged in user'
+      operationId: 'logout'
+      responses: 
+        200:
+          description: 'Logout successful'
+        409:
+          description: 'Not logged in'
+  /ws/public/fetch/data/{group}/{repo}:
+    get:
+      tags:
+      - 'Fetch'
+      summary: 'Fetch a single data set'
+      description: ''
+      operationId: 'fetchDataSet'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - $ref: '#/parameters/commitId'
+      responses:
+        200:
+          description: 'Returns the newest data set of type {type} with reference id {refId} within repository {group}/{repo} until the specified {commitId}. See JSON-LD definition for data set structure'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} not found or no data set with given type, refId & (optional) commit id found in it'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/fetch/request/{group}/{repo}:
+    get:
+      tags:
+      - 'Fetch'
+      summary: 'Request to fetch data sets'
+      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation'
+      operationId: 'requestFetch'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'lastCommitId'
+        description: 'The last fetched commit, before executing the current fetch request'
+        in: query
+        type: string
+      - name: 'sync'
+        description: 'If true includes all data set descriptors until {lastCommitId}, if false includes all data set descriptors after {lastCommitId}'
+        in: query
+        type: boolean
+        default: false
+      responses:
+        200:
+          description: 'Returns all data set descriptors for data sets commited to the {group}/{repo} since {lastCommitId}'
+          schema:
+            $ref: '#/definitions/FetchRequestData'
+        204:
+          description: 'No data sets to fetch'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/fetch/references/{group}/{repo}/{commitId}:
+    get:
+      tags:
+      - 'Fetch'
+      summary: 'List all references for a commit'
+      description: 'Loads data set descriptors of all data sets that were part of the commit with id {commitId}'
+      operationId: 'fetchCommitReferences'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'commitId'
+        description: 'The id of the commit to get the references for'
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'Returns all data set descriptors for data sets commited to the {group}/{repo} in commit {commitId}'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FetchRequestData'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} not found or no commit with id {commitId} found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/fetch/{group}/{repo}:
+    post:
+      tags:
+      - 'Fetch'
+      summary: 'Fetch data sets'
+      description: 'Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}'
+      operationId: 'fetch'
+      consumes: 
+      - application/json
+      produces:
+      - application/octet-stream
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'commitId'
+        description: 'The commit id to fetch data after/until'
+        in: query
+        type: string
+      - name: 'download'
+        description: 'If true fetches all data sets until {commitId}, if false fetches all data sets after {commitId}'
+        in: query
+        type: boolean
+        default: false
+      - name: 'body'
+        description: 'A list of data sets to fetch (clients might have identified already updated files, this can be used to specifiy which data sets actually need to be returned'
+        in: body
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/FileReference'
+      responses:
+        200:
+          description: 'Returns an output stream, streaming the collected data sets as byte array. For each data set a byte array is constructed by the following pattern: 4 bytes specifying the length of the data set descriptor, followed by the bytes of the data set descriptor json string itself. Next, 4 bytes specifying the length of the data set, followed by the bytes of the data set json string itself. If any binary data is attached, 4 bytes specifying the number of binary files. Next, for each binary file: The length of the path string, followed by the path string itself, followed by the length of the data, followed by the data itself'
+        204:
+          description: 'No data sets to fetch'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/commit/request/{group}/{repo}:
+    get:
+      tags:
+      - 'Commit'
+      summary: 'Request to commit data sets'
+      description: 'Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data'
+      operationId: 'requestCommit'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      responses:
+        200:
+          description: 'User is in sync with repository {group}/{repo} and is allowed to commit data sets'
+        403:
+          $ref: '#/responses/NoWritePerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        409:
+          description: 'Out of sync, if there were other commits before the current commit, but after the commit with the specified {lastCommitId}'
+  /ws/commit/{group}/{repo}:
+    post:
+      tags:
+      - 'Commit'
+      summary: 'Commit data sets'
+      description: 'Commits data sets to repository {group}/{repo}'
+      operationId: 'commit'
+      consumes: 
+      - application/octet-stream
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'body'
+        description: 'An input stream streaming the data sets from the client to the server as byte array. See fetch response 200 for definition of the byte array'
+        in: body
+        schema: 
+          type: object
+        required: true
+      - name: 'lastCommitId'
+        description: 'The clients last commit id before this current commit'
+        in: query
+        type: string
+      responses:
+        201:
+          description: 'Returns the new commit id if the data sets were successfully committed to repository {group}/{repo}'
+        403:
+          $ref: '#/responses/NoWritePerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        409:
+          description: 'Out of sync, if there were other commits before the current commit, but after the commit with the specified {lastCommitId}'
