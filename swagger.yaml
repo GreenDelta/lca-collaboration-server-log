@@ -401,7 +401,7 @@ paths:
             $ref: '#/definitions/FileReference'
       responses:
         200:
-          description: 'Returns an output stream, streaming the collected data sets as byte array. For each data set a byte array is constructed by the following pattern: 4 bytes specifying the length of the data set descriptor, followed by the bytes of the data set descriptor json string itself. Next, 4 bytes specifying the length of the data set, followed by the bytes of the data set json string itself. If any binary data is attached, 4 bytes specifying the number of binary files. Next, for each binary file: The length of the path string, followed by the path string itself, followed by the length of the data, followed by the data itself'
+          description: 'Returns an output stream, streaming the collected data sets as byte array. For each data set a byte array is constructed by the following pattern: 4 bytes specifying the length of the data set descriptor, followed by the bytes of the data set descriptor json string itself. Next, 4 bytes specifying the length of the data set, followed by the bytes of the data set json string itself. If any binary data is attached, 4 bytes specifying the number of binary files. Next, for each binary file: The length of the path string, followed by the path string itself, followed by the length of the data, followed by the data itself. The length information is in Big-Endian order, the data strings are utf-8 encoded and, the data strings and binary files are also gzipped'
         204:
           description: 'No data sets to fetch'
         403:
