@@ -815,6 +815,53 @@ margin-bottom: 20px;
   "type" : "string",
   "enum" : [ "ACTOR", "CATEGORY", "CURRENCY", "DQ_SYSTEM", "FLOW", "FLOW_PROPERTY", "IMPACT_CATEGORY", "IMPACT_METHOD", "LOCATION", "NW_SET", "PARAMETER", "PROCESS", "PRODUCT_SYSTEM", "PROJECT", "SOURCE", "UNIT", "UNIT_GROUP", "SOCIAL_INDICATOR" ]
 };
+        defs["Repository"] = {
+  "type" : "object",
+  "properties" : {
+    "group" : {
+      "type" : "string",
+      "description" : "The group of the repository"
+    },
+    "name" : {
+      "type" : "string",
+      "description" : "The name of the repository"
+    },
+    "groupIsUserNamespace" : {
+      "type" : "boolean",
+      "description" : "True if the group is a user namespace",
+      "default" : false
+    },
+    "settings" : {
+      "$ref" : "#/definitions/RepositorySettings"
+    }
+  }
+};
+        defs["RepositorySettings"] = {
+  "type" : "object",
+  "properties" : {
+    "publicAccess" : {
+      "type" : "boolean",
+      "description" : "True if the repository can be accessed publicly",
+      "default" : false
+    },
+    "prohibitsCommits" : {
+      "type" : "boolean",
+      "description" : "True if the repository is locked for further commits",
+      "default" : false
+    },
+    "commentApproval" : {
+      "type" : "boolean",
+      "description" : "True if the a comment needs to be approved before publication",
+      "default" : false
+    },
+    "maxSize" : {
+      "type" : "integer",
+      "format" : "int64",
+      "description" : "The maximum size in bytes if a limitation is set, 0 otherwise",
+      "default" : 0
+    }
+  }
+};
         defs["User"] = {
   "allOf" : [ {
     "$ref" : "#/definitions/UserDescriptor"
@@ -919,6 +966,16 @@ margin-bottom: 20px;
                     <li data-group="Fetch" data-name="requestFetch" class="">
                       <a href="#api-Fetch-requestFetch">requestFetch</a>
                     </li>
+                  <li class="nav-header" data-group="Repository"><a href="#api-Repository">API Methods - Repository</a></li>
+                    <li data-group="Repository" data-name="getRepository" class="">
+                      <a href="#api-Repository-getRepository">getRepository</a>
+                    </li>
+                    <li data-group="Repository" data-name="getRepositoryAvatar" class="">
+                      <a href="#api-Repository-getRepositoryAvatar">getRepositoryAvatar</a>
+                    </li>
+                    <li data-group="Repository" data-name="getRepositoryFile" class="">
+                      <a href="#api-Repository-getRepositoryFile">getRepositoryFile</a>
+                    </li>
                   <li class="nav-header" data-group="Session"><a href="#api-Session">API Methods - Session</a></li>
                     <li data-group="Session" data-name="getCurrentUser" class="">
                       <a href="#api-Session-getCurrentUser">getCurrentUser</a>
@@ -959,7 +1016,7 @@ margin-bottom: 20px;
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Commits data sets to repository {group}/{repo}</p>
+                        <p class="marked">Commits data sets to repository {group}/{repo}. For this operation the client needs write access on the specified repository</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/ws/commit/{group}/{repo}</span></code></pre>
@@ -1334,7 +1391,7 @@ $(document).ready(function() {
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 406 - Unsupported json schema version </h3>
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -1362,7 +1419,7 @@ $(document).ready(function() {
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data</p>
+                        <p class="marked">Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs write access on the specified repository</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/commit/request/{group}/{repo}</span></code></pre>
@@ -1647,7 +1704,7 @@ except ApiException as e:
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 406 - Unsupported json schema version </h3>
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -1678,7 +1735,7 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}</p>
+                        <p class="marked">Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}. For this operation the client needs read access on the specified repository</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/ws/public/fetch/{group}/{repo}</span></code></pre>
@@ -2092,7 +2149,7 @@ $(document).ready(function() {
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 406 - Unsupported json schema version </h3>
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -2112,7 +2169,7 @@ $(document).ready(function() {
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Loads data set descriptors of all data sets that were part of the commit with id {commitId}</p>
+                        <p class="marked">Loads data set descriptors of all data sets that were part of the commit with id {commitId}. For this operation the client needs read access on the specified repository</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/public/fetch/references/{group}/{repo}/{commitId}</span></code></pre>
@@ -2477,7 +2534,7 @@ except ApiException as e:
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 406 - Unsupported json schema version </h3>
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -2497,7 +2554,7 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked"></p>
+                        <p class="marked">For this operation the client needs read access on the specified repository</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/public/fetch/data/{group}/{repo}</span></code></pre>
@@ -2623,7 +2680,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.fetchDataSet(group, repo, type, refId, opts, callback);
+api.fetchDataSet(group, repo, type, refId, , opts, callback);
 </code></pre>
                             </div>
 
@@ -2886,7 +2943,7 @@ except ApiException as e:
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 406 - Unsupported json schema version </h3>
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -2906,7 +2963,7 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Loads data set descriptors to be fetched in a subsequent &quot;fetch&quot; invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation</p>
+                        <p class="marked">Loads data set descriptors to be fetched in a subsequent &quot;fetch&quot; invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs read access on the specified repository</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/public/fetch/request/{group}/{repo}</span></code></pre>
@@ -3310,7 +3367,1106 @@ except ApiException as e:
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 406 - Unsupported json schema version </h3>
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-Repository">
+                  <h1>Repository</h1>
+                    <div id="api-Repository-getRepository">
+                      <article id="api-Repository-getRepository-0" data-group="User" data-name="getRepository" data-version="0">
+                        <div class="pull-left">
+                          <h1>getRepository</h1>
+                          <p>Get repository settings</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Loads settings of the specified repository {group}/{repo}. For this operation the client needs read access to the repository</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/public/repository/{group}/{repo}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Repository-getRepository-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Repository-getRepository-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Repository-getRepository-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Repository-getRepository-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Repository-getRepository-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Repository-getRepository-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Repository-getRepository-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Repository-getRepository-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Repository-getRepository-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Repository-getRepository-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Repository-getRepository-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Repository-getRepository-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://data.openlca.org/ws/public/repository/{group}/{repo}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Repository-getRepository-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.RepositoryApi;
+
+import java.io.File;
+import java.util.*;
+
+public class RepositoryApiExample {
+
+    public static void main(String[] args) {
+        
+        RepositoryApi apiInstance = new RepositoryApi();
+        String group = group_example; // String | The group of the repository
+        String repo = repo_example; // String | The name of the repository
+        try {
+            Repository result = apiInstance.getRepository(group, repo);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RepositoryApi#getRepository");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Repository-getRepository-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.RepositoryApi;
+
+public class RepositoryApiExample {
+
+    public static void main(String[] args) {
+        RepositoryApi apiInstance = new RepositoryApi();
+        String group = group_example; // String | The group of the repository
+        String repo = repo_example; // String | The name of the repository
+        try {
+            Repository result = apiInstance.getRepository(group, repo);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RepositoryApi#getRepository");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Repository-getRepository-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Repository-getRepository-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">String *group = group_example; // The group of the repository
+String *repo = repo_example; // The name of the repository
+
+RepositoryApi *apiInstance = [[RepositoryApi alloc] init];
+
+// Get repository settings
+[apiInstance getRepositoryWith:group
+    repo:repo
+              completionHandler: ^(Repository output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepository-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var LcaCollaborationServerWebservice = require('lca_collaboration_server_webservice');
+
+var api = new LcaCollaborationServerWebservice.RepositoryApi()
+
+var group = group_example; // {String} The group of the repository
+
+var repo = repo_example; // {String} The name of the repository
+
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.getRepository(group, repo, , callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Repository-getRepository-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Repository-getRepository-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getRepositoryExample
+    {
+        public void main()
+        {
+            
+            var apiInstance = new RepositoryApi();
+            var group = group_example;  // String | The group of the repository
+            var repo = repo_example;  // String | The name of the repository
+
+            try
+            {
+                // Get repository settings
+                Repository result = apiInstance.getRepository(group, repo);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling RepositoryApi.getRepository: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepository-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\Api\RepositoryApi();
+$group = group_example; // String | The group of the repository
+$repo = repo_example; // String | The name of the repository
+
+try {
+    $result = $api_instance->getRepository($group, $repo);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling RepositoryApi->getRepository: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepository-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::RepositoryApi;
+
+my $api_instance = WWW::SwaggerClient::RepositoryApi->new();
+my $group = group_example; # String | The group of the repository
+my $repo = repo_example; # String | The name of the repository
+
+eval { 
+    my $result = $api_instance->getRepository(group => $group, repo => $repo);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling RepositoryApi->getRepository: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepository-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.RepositoryApi()
+group = group_example # String | The group of the repository
+repo = repo_example # String | The name of the repository
+
+try: 
+    # Get repository settings
+    api_response = api_instance.get_repository(group, repo)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling RepositoryApi->getRepository: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">group*</td>
+<td>
+
+
+    <div id="d2e199_getRepository_group">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The group of the repository
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">repo*</td>
+<td>
+
+
+    <div id="d2e199_getRepository_repo">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The name of the repository
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Returns the settings for repository {group}/{repo} </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getRepository-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getRepository-200-schema">
+                                  <div id='responses-getRepository-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Returns the settings for repository {group}/{repo}",
+  "schema" : {
+    "$ref" : "#/definitions/Repository"
+  }
+};
+                                        var schema = schemaWrapper.schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = defs;
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getRepository-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getRepository-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getRepository-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 403 - No permission to READ on {group}/{repo} </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 404 - Repository {group}/{repo} not found </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Repository-getRepositoryAvatar">
+                      <article id="api-Repository-getRepositoryAvatar-0" data-group="User" data-name="getRepositoryAvatar" data-version="0">
+                        <div class="pull-left">
+                          <h1>getRepositoryAvatar</h1>
+                          <p>Get repository avatar</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Loads the avatar for repository {group}/{repo}. For this operation the client needs read access to the repository</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/public/repository/avatar/{group}/{repo}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Repository-getRepositoryAvatar-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Repository-getRepositoryAvatar-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Repository-getRepositoryAvatar-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryAvatar-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Repository-getRepositoryAvatar-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://data.openlca.org/ws/public/repository/avatar/{group}/{repo}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.RepositoryApi;
+
+import java.io.File;
+import java.util.*;
+
+public class RepositoryApiExample {
+
+    public static void main(String[] args) {
+        
+        RepositoryApi apiInstance = new RepositoryApi();
+        String group = group_example; // String | The group of the repository
+        String repo = repo_example; // String | The name of the repository
+        try {
+            apiInstance.getRepositoryAvatar(group, repo);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RepositoryApi#getRepositoryAvatar");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.RepositoryApi;
+
+public class RepositoryApiExample {
+
+    public static void main(String[] args) {
+        RepositoryApi apiInstance = new RepositoryApi();
+        String group = group_example; // String | The group of the repository
+        String repo = repo_example; // String | The name of the repository
+        try {
+            apiInstance.getRepositoryAvatar(group, repo);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RepositoryApi#getRepositoryAvatar");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">String *group = group_example; // The group of the repository
+String *repo = repo_example; // The name of the repository
+
+RepositoryApi *apiInstance = [[RepositoryApi alloc] init];
+
+// Get repository avatar
+[apiInstance getRepositoryAvatarWith:group
+    repo:repo
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var LcaCollaborationServerWebservice = require('lca_collaboration_server_webservice');
+
+var api = new LcaCollaborationServerWebservice.RepositoryApi()
+
+var group = group_example; // {String} The group of the repository
+
+var repo = repo_example; // {String} The name of the repository
+
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.getRepositoryAvatar(group, repo, , callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getRepositoryAvatarExample
+    {
+        public void main()
+        {
+            
+            var apiInstance = new RepositoryApi();
+            var group = group_example;  // String | The group of the repository
+            var repo = repo_example;  // String | The name of the repository
+
+            try
+            {
+                // Get repository avatar
+                apiInstance.getRepositoryAvatar(group, repo);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling RepositoryApi.getRepositoryAvatar: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\Api\RepositoryApi();
+$group = group_example; // String | The group of the repository
+$repo = repo_example; // String | The name of the repository
+
+try {
+    $api_instance->getRepositoryAvatar($group, $repo);
+} catch (Exception $e) {
+    echo 'Exception when calling RepositoryApi->getRepositoryAvatar: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::RepositoryApi;
+
+my $api_instance = WWW::SwaggerClient::RepositoryApi->new();
+my $group = group_example; # String | The group of the repository
+my $repo = repo_example; # String | The name of the repository
+
+eval { 
+    $api_instance->getRepositoryAvatar(group => $group, repo => $repo);
+};
+if ($@) {
+    warn "Exception when calling RepositoryApi->getRepositoryAvatar: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryAvatar-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.RepositoryApi()
+group = group_example # String | The group of the repository
+repo = repo_example # String | The name of the repository
+
+try: 
+    # Get repository avatar
+    api_instance.get_repository_avatar(group, repo)
+except ApiException as e:
+    print("Exception when calling RepositoryApi->getRepositoryAvatar: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">group*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryAvatar_group">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The group of the repository
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">repo*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryAvatar_repo">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The name of the repository
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Returns the avatar for repository {group}/{repo} as byte array </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 403 - No permission to READ on {group}/{repo} </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 404 - Repository {group}/{repo} not found </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Repository-getRepositoryFile">
+                      <article id="api-Repository-getRepositoryFile-0" data-group="User" data-name="getRepositoryFile" data-version="0">
+                        <div class="pull-left">
+                          <h1>getRepositoryFile</h1>
+                          <p>Get repository file</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Loads the file {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs read access to the repository</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/ws/public/repository/file/{group}/{repo}/{type}/{refId}/{filename}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Repository-getRepositoryFile-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Repository-getRepositoryFile-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Repository-getRepositoryFile-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Repository-getRepositoryFile-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Repository-getRepositoryFile-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://data.openlca.org/ws/public/repository/file/{group}/{repo}/{type}/{refId}/{filename}?commitId="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.RepositoryApi;
+
+import java.io.File;
+import java.util.*;
+
+public class RepositoryApiExample {
+
+    public static void main(String[] args) {
+        
+        RepositoryApi apiInstance = new RepositoryApi();
+        String group = group_example; // String | The group of the repository
+        String repo = repo_example; // String | The name of the repository
+        String type = type_example; // String | The model type of the data set
+        String refId = refId_example; // String | The reference id of the data set
+        String filename = filename_example; // String | The filename of the file to obtain
+        String commitId = commitId_example; // String | The commit id for the data set (or latest before)
+        try {
+            apiInstance.getRepositoryFile(group, repo, type, refId, filename, commitId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RepositoryApi#getRepositoryFile");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.RepositoryApi;
+
+public class RepositoryApiExample {
+
+    public static void main(String[] args) {
+        RepositoryApi apiInstance = new RepositoryApi();
+        String group = group_example; // String | The group of the repository
+        String repo = repo_example; // String | The name of the repository
+        String type = type_example; // String | The model type of the data set
+        String refId = refId_example; // String | The reference id of the data set
+        String filename = filename_example; // String | The filename of the file to obtain
+        String commitId = commitId_example; // String | The commit id for the data set (or latest before)
+        try {
+            apiInstance.getRepositoryFile(group, repo, type, refId, filename, commitId);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling RepositoryApi#getRepositoryFile");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">String *group = group_example; // The group of the repository
+String *repo = repo_example; // The name of the repository
+String *type = type_example; // The model type of the data set
+String *refId = refId_example; // The reference id of the data set
+String *filename = filename_example; // The filename of the file to obtain
+String *commitId = commitId_example; // The commit id for the data set (or latest before) (optional)
+
+RepositoryApi *apiInstance = [[RepositoryApi alloc] init];
+
+// Get repository file
+[apiInstance getRepositoryFileWith:group
+    repo:repo
+    type:type
+    refId:refId
+    filename:filename
+    commitId:commitId
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var LcaCollaborationServerWebservice = require('lca_collaboration_server_webservice');
+
+var api = new LcaCollaborationServerWebservice.RepositoryApi()
+
+var group = group_example; // {String} The group of the repository
+
+var repo = repo_example; // {String} The name of the repository
+
+var type = type_example; // {String} The model type of the data set
+
+var refId = refId_example; // {String} The reference id of the data set
+
+var filename = filename_example; // {String} The filename of the file to obtain
+
+var opts = { 
+  'commitId': commitId_example // {String} The commit id for the data set (or latest before)
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.getRepositoryFile(group, repo, type, refId, filename, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Repository-getRepositoryFile-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class getRepositoryFileExample
+    {
+        public void main()
+        {
+            
+            var apiInstance = new RepositoryApi();
+            var group = group_example;  // String | The group of the repository
+            var repo = repo_example;  // String | The name of the repository
+            var type = type_example;  // String | The model type of the data set
+            var refId = refId_example;  // String | The reference id of the data set
+            var filename = filename_example;  // String | The filename of the file to obtain
+            var commitId = commitId_example;  // String | The commit id for the data set (or latest before) (optional) 
+
+            try
+            {
+                // Get repository file
+                apiInstance.getRepositoryFile(group, repo, type, refId, filename, commitId);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling RepositoryApi.getRepositoryFile: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\Api\RepositoryApi();
+$group = group_example; // String | The group of the repository
+$repo = repo_example; // String | The name of the repository
+$type = type_example; // String | The model type of the data set
+$refId = refId_example; // String | The reference id of the data set
+$filename = filename_example; // String | The filename of the file to obtain
+$commitId = commitId_example; // String | The commit id for the data set (or latest before)
+
+try {
+    $api_instance->getRepositoryFile($group, $repo, $type, $refId, $filename, $commitId);
+} catch (Exception $e) {
+    echo 'Exception when calling RepositoryApi->getRepositoryFile: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::RepositoryApi;
+
+my $api_instance = WWW::SwaggerClient::RepositoryApi->new();
+my $group = group_example; # String | The group of the repository
+my $repo = repo_example; # String | The name of the repository
+my $type = type_example; # String | The model type of the data set
+my $refId = refId_example; # String | The reference id of the data set
+my $filename = filename_example; # String | The filename of the file to obtain
+my $commitId = commitId_example; # String | The commit id for the data set (or latest before)
+
+eval { 
+    $api_instance->getRepositoryFile(group => $group, repo => $repo, type => $type, refId => $refId, filename => $filename, commitId => $commitId);
+};
+if ($@) {
+    warn "Exception when calling RepositoryApi->getRepositoryFile: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Repository-getRepositoryFile-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.RepositoryApi()
+group = group_example # String | The group of the repository
+repo = repo_example # String | The name of the repository
+type = type_example # String | The model type of the data set
+refId = refId_example # String | The reference id of the data set
+filename = filename_example # String | The filename of the file to obtain
+commitId = commitId_example # String | The commit id for the data set (or latest before) (optional)
+
+try: 
+    # Get repository file
+    api_instance.get_repository_file(group, repo, type, refId, filename, commitId=commitId)
+except ApiException as e:
+    print("Exception when calling RepositoryApi->getRepositoryFile: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">group*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryFile_group">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The group of the repository
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">repo*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryFile_repo">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The name of the repository
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">type*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryFile_type">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The model type of the data set
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">refId*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryFile_refId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The reference id of the data set
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">filename*</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryFile_filename">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The filename of the file to obtain
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">commitId</td>
+<td>
+
+
+    <div id="d2e199_getRepositoryFile_commitId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        The commit id for the data set (or latest before)
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Returns the file {filename} from data set {type}/{refId} for {commitId} in repository {group}/{repo} as byte array </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 403 - No permission to READ on {group}/{repo} </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 404 - Repository {group}/{repo}, data set {type}/{refId} commit {commitId} or file {filename} not found </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 406 - Repository json schema version is not supported </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>

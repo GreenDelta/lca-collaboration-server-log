@@ -218,6 +218,41 @@ definitions:
           description: 'Indicates if the data set was added in the last commit'
           type: boolean
           default: false
+  Repository:
+    type: object
+    properties:
+      group: 
+        description: 'The group of the repository'
+        type: string
+      name: 
+        description: 'The name of the repository'
+        type: string
+      groupIsUserNamespace:
+        description: 'True if the group is a user namespace'
+        type: boolean
+        default: false
+      settings:
+        $ref: '#/definitions/RepositorySettings'
+  RepositorySettings:
+    type: object
+    properties:
+      publicAccess:
+        description: 'True if the repository can be accessed publicly'
+        type: boolean
+        default: false
+      prohibitsCommits:
+        description: 'True if the repository is locked for further commits'
+        type: boolean
+        default: false
+      commentApproval:
+        description: 'True if the a comment needs to be approved before publication'
+        type: boolean
+        default: false
+      maxSize:
+        description: 'The maximum size in bytes if a limitation is set, 0 otherwise'
+        type: integer
+        format: int64
+        default: 0
 responses:
   NoReadPerm:
     description: 'No permission to READ on {group}/{repo}'
@@ -226,7 +261,7 @@ responses:
   RepoNotFound:
     description: 'Repository {group}/{repo} not found'
   UnsupportedSchema:
-    description: 'Unsupported json schema version'
+    description: 'Repository json schema version is not supported'
 paths:
   /ws/public:
     get:
@@ -286,7 +321,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Fetch a single data set'
-      description: ''
+      description: 'For this operation the client needs read access on the specified repository'
       operationId: 'fetchDataSet'
       produces:
       - application/json
@@ -310,7 +345,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Request to fetch data sets'
-      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation'
+      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs read access on the specified repository'
       operationId: 'requestFetch'
       produces:
       - 'application/json'
@@ -344,7 +379,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'List all references for a commit'
-      description: 'Loads data set descriptors of all data sets that were part of the commit with id {commitId}'
+      description: 'Loads data set descriptors of all data sets that were part of the commit with id {commitId}. For this operation the client needs read access on the specified repository'
       operationId: 'fetchCommitReferences'
       produces:
       - 'application/json'
@@ -374,7 +409,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Fetch data sets'
-      description: 'Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}'
+      description: 'Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}. For this operation the client needs read access on the specified repository'
       operationId: 'fetch'
       consumes: 
       - application/json
@@ -415,7 +450,7 @@ paths:
       tags:
       - 'Commit'
       summary: 'Request to commit data sets'
-      description: 'Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data'
+      description: 'Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs write access on the specified repository'
       operationId: 'requestCommit'
       parameters:
       - $ref: '#/parameters/group'
@@ -436,7 +471,7 @@ paths:
       tags:
       - 'Commit'
       summary: 'Commit data sets'
-      description: 'Commits data sets to repository {group}/{repo}'
+      description: 'Commits data sets to repository {group}/{repo}. For this operation the client needs write access on the specified repository'
       operationId: 'commit'
       consumes: 
       - application/octet-stream
@@ -466,3 +501,76 @@ paths:
           $ref: '#/responses/UnsupportedSchema'
         409:
           description: 'Out of sync, if there were other commits before the current commit, but after the commit with the specified {lastCommitId}'
+  /ws/public/repository/{group}/{repo}:
+    get:
+      tags:
+      - 'Repository'
+      summary: 'Get repository settings'
+      description: 'Loads settings of the specified repository {group}/{repo}. For this operation the client needs read access to the repository'
+      operationId: 'getRepository'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      responses:
+        200:
+          description: 'Returns the settings for repository {group}/{repo}'
+          schema:
+            $ref: '#/definitions/Repository'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/repository/avatar/{group}/{repo}:
+    get:
+      tags:
+      - 'Repository'
+      summary: 'Get repository avatar'
+      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs read access to the repository'
+      operationId: 'getRepositoryAvatar'
+      produces:
+      - application/octet-stream
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      responses:
+        200:
+          description: 'Returns the avatar for repository {group}/{repo} as byte array'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/repository/file/{group}/{repo}/{type}/{refId}/{filename}:
+    get:
+      tags:
+      - 'Repository'
+      summary: 'Get repository file'
+      description: 'Loads the file {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs read access to the repository'
+      operationId: 'getRepositoryFile'
+      produces:
+      - application/octet-stream
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - name: 'filename'
+        description: 'The filename of the file to obtain'
+        in: path
+        type: string
+        required: true
+      - $ref: '#/parameters/commitId'
+      responses:
+        200:
+          description: 'Returns the file {filename} from data set {type}/{refId} for {commitId} in repository {group}/{repo} as byte array'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo}, data set {type}/{refId} commit {commitId} or file {filename} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
