@@ -35,9 +35,11 @@ definitions:
     type: object
     properties:
       username:
+        description: 'The username of the user to login with'
         type: string
         example: 'john.doe'
       password:
+        description: 'The password of the user to login with'
         type: string
         example: 'passw0rd'
       token:
@@ -47,6 +49,115 @@ definitions:
     required:
       - username
       - password
+  AggregationResultEntry:
+    type: object
+    properties: 
+      key:
+        description: 'The key of this aggregation result entry'
+        type: string
+        example: 'ACTOR'
+      count:
+        description: 'The amount of entries found for the given key'
+        type: integer
+        format: int64
+        example: '12'
+      subEntries:
+        description: 'Children elements in case of hierarchical entries'
+        type: array
+        items: 
+          $ref: '#/definitions/AggregationResultEntry'
+  AggregationResult:
+    type: object
+    properties: 
+      name:
+        description: 'The name of this aggregation result'
+        type: string
+        example: 'repositoryId'
+      type:
+        description: 'The type of aggregation'
+        type: string
+        example: 'TERM'
+      totalCount:
+        description: 'The amount of entries found for this aggregation'
+        type: integer
+        format: int64
+        example: '13'
+      entries:
+        description: 'A list of entries into which the aggregation splits (each possible result value is a result entry)'
+        type: array
+        items: 
+          $ref: '#/definitions/AggregationResultEntry'
+  ResultInfo:
+    type: object
+    properties: 
+      pageSize:
+        description: 'The size of each page of results'
+        type: integer
+        format: int32
+        example: '10'
+      count:
+        description: 'The amount of actual results returned'
+        type: integer
+        format: int32
+        example: '8'
+      totalCount:
+        description: 'The amount total results matching the query'
+        type: integer
+        format: int64
+        example: '887'
+      currentPage:
+        description: 'The current page number'
+        type: integer
+        format: int32
+        example: '8'
+      pageCount:
+        description: 'The total number of pages'
+        type: integer
+        format: int32
+        example: '8'
+  SearchResult:
+    type: object
+    properties: 
+      aggregations:
+        description: 'The aggregations of the search result'
+        type: array
+        items:
+          $ref: '#/definitions/AggregationResult'
+      resultInfo:
+        description: 'Search result specific information'
+        $ref: '#/definitions/ResultInfo'
+  RepositoryDescriptorSearchResult:
+    allOf:
+    - $ref: '#/definitions/SearchResult'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/RepositoryDescriptor'
+  GroupDescriptorSearchResult:
+    allOf:
+    - $ref: '#/definitions/SearchResult'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/GroupDescriptor'
+  CommitSearchResult:
+    allOf:
+    - $ref: '#/definitions/SearchResult'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Commit'
+  FetchRequestDataSearchResult:
+    allOf:
+    - $ref: '#/definitions/SearchResult'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/FetchRequestData'
   UserDescriptor:
     type: object
     properties:
@@ -184,7 +295,7 @@ definitions:
           type: boolean
           default: false
         userCanWrite:
-          description: 'True if the current user has write access to the group'
+          description: 'True if the current user has permission to WRITE to the group'
           type: boolean
           default: false
         userCanCreate:
@@ -300,6 +411,30 @@ definitions:
         allOf:
         - $ref: '#/definitions/TeamDescriptor'
         - description: 'The team this membership is applying to (or null if its a user membership)'
+  Commit:
+    type: object
+    properties:
+      id:
+        description: 'The id of the commit'
+        type: string
+        example: 'b16964d2-a5a0-7d05-4c69-782d87904ed2'
+      message:
+        description: 'The message of the commit'
+        type: string
+        example: 'Changed some data sets'
+      user:
+        description: 'The username of the user that performed the commit'
+        type: string
+        example: 'johndoe'
+      timestamp:
+        description: 'The time when the commit was performed'
+        type: integer
+        format: int64
+        example: 1552993526562
+      userDisplayName:
+        description: 'The display name of the user that performed the commit or the username if the user does not exist anymore'
+        type: string
+        example: 'John Doe'
   FileReference:
     type: object
     properties:
@@ -394,6 +529,43 @@ parameters:
     description: 'The commit id for the data set (or latest before)'
     in: query
     type: string
+  username:
+    name: 'username'
+    description: 'The username of the user'
+    in: path
+    type: string
+    required: true
+  teamname:
+    name: 'teamname'
+    description: 'The teamname of the team'
+    in: path
+    type: string
+    required: true
+  role:
+    name: 'role'
+    description: 'The role of the user in the repository'
+    in: path
+    type: string
+    required: true
+  page:
+    name: 'page'
+    description: 'page value for pagination, if the value is 0, no paging is applied and all values will be returned'
+    in: query
+    type: integer
+    format: int32
+    default: 1
+  pageSize:
+    name: 'pageSize'
+    description: 'Defines the page size for pagination if page is not 0'
+    in: query
+    type: integer
+    format: int32
+    default: 10
+  filter:
+    name: 'filter'
+    description: 'Filters results that contain the phrase in their name'
+    in: query
+    type: string
 responses:
   NotLoggedIn:
     description: 'Not authenticated'
@@ -407,6 +579,10 @@ responses:
     description: 'No permission to WRITE on {group}'
   NoDeletePerm:
     description: 'No permission to DELETE {group}/{repo}'
+  NoChangeRolePerm:
+    description: 'No permission to CHANGE_ROLE on {group}/{repo}'
+  NoChangeRolePermGroup:
+    description: 'No permission to CHANGE_ROLE on {group}'
   RepoNotFound:
     description: 'Repository {group}/{repo} not found'
   GroupNotFound:
@@ -477,24 +653,11 @@ paths:
       produces:
       - application/json
       parameters:
-      - name: 'page'
-        description: 'page value for pagination, if the value is 0, no paging is applied and all accessible groups are returned'
-        in: query
-        type: integer
-        format: int32
-        default: 1
-      - name: 'pageSize'
-        description: 'Defines the page size for pagination if page is not 0'
-        in: query
-        type: integer
-        format: int32
-        default: 10
-      - name: 'filter'
-        description: 'Filters groups that contain the phrase in their name'
-        in: query
-        type: string
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
       - name: 'onlyIfCanWrite'
-        description: 'If true only groups the client has WRITE access to are  returned'
+        description: 'If true only groups the client has permission to WRITE to are  returned'
         in: query
         type: boolean
         default: false
@@ -502,9 +665,7 @@ paths:
         200:
           description: 'Returns a list of accessible groups'
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/GroupDescriptor'
+            $ref: '#/definitions/GroupDescriptorSearchResult'
         401:
           $ref: '#/responses/NotLoggedIn'
   /ws/group/{group}:
@@ -512,7 +673,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Get group settings'
-      description: 'Loads settings and permissions of {group}. For this operation the client needs READ access on {group}'
+      description: 'Loads settings and permissions of {group}. For this operation the client needs permission to READ on {group}'
       operationId: 'getGroup'
       produces:
       - application/json
@@ -552,7 +713,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Delete a group'
-      description: 'Deletes group {group} and all containing repositories. For this operation the client needs DELETE access to {group}'
+      description: 'Deletes group {group} and all containing repositories. For this operation the client needs permission to DELETE to {group}'
       operationId: 'deleteGroup'
       responses:
         200:
@@ -572,7 +733,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Get group avatar'
-      description: 'Loads the avatar for group {group}. For this operation the client needs READ access on {group}'
+      description: 'Loads the avatar for group {group}. For this operation the client needs permission to READ on {group}'
       operationId: 'getGroupAvatar'
       produces:
       - application/octet-stream
@@ -589,7 +750,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Set group avatar'
-      description: 'Set the avatar for group {group}. For this operation the client needs WRITE access on {group}'
+      description: 'Set the avatar for group {group}. For this operation the client needs permission to WRITE on {group}'
       operationId: 'setGroupAvatar'
       consumes:
       - multipart/form-data
@@ -615,7 +776,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get public repository settings'
-      description: 'Loads settings of the specified repository {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads settings of the specified repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getPublicRepository'
       produces:
       - application/json
@@ -638,7 +799,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository avatar'
-      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getPublicRepositoryAvatar'
       produces:
       - application/octet-stream
@@ -659,7 +820,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository file'
-      description: 'Loads the file {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads the file {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getRepositoryFile'
       produces:
       - application/octet-stream
@@ -693,22 +854,9 @@ paths:
       produces:
       - application/json
       parameters:
-      - name: 'page'
-        description: 'page value for pagination, if the value is 0, no paging is applied and all accessible repositories are returned'
-        in: query
-        type: integer
-        format: int32
-        default: 1
-      - name: 'pageSize'
-        description: 'Defines the page size for pagination if page is not 0'
-        in: query
-        type: integer
-        format: int32
-        default: 10
-      - name: 'filter'
-        description: 'Filters repositories that contain the phrase in group or name'
-        in: query
-        type: string
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
       - name: 'group'
         description: 'Filters repositories by group (exact match)'
         in: query
@@ -722,9 +870,7 @@ paths:
         200:
           description: 'Returns a list of accessible repositories'
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/RepositoryDescriptor'
+            $ref: '#/definitions/RepositoryDescriptorSearchResult'
         401:
           $ref: '#/responses/NotLoggedIn'
   /ws/repository/{group}/{repo}:
@@ -732,7 +878,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository settings'
-      description: 'Loads settings and permissions of the specified repository {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads settings and permissions of the specified repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getRepository'
       produces:
       - application/json
@@ -753,7 +899,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Create a new repository'
-      description: 'Creates a new repository in {group} with name {repo}. For this operation the client needs WRITE access to {group} and general permission to create repositories'
+      description: 'Creates a new repository in {group} with name {repo}. For this operation the client needs permission to WRITE to {group} and general permission to create repositories'
       operationId: 'createRepository'
       produces:
       - application/json
@@ -776,7 +922,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Delete a repository'
-      description: 'Deletes repository {group}/{repo}. For this operation the client needs DELETE access to {group}/{repo}'
+      description: 'Deletes repository {group}/{repo}. For this operation the client needs permission to DELETE to {group}/{repo}'
       operationId: 'deleteRepository'
       responses:
         200:
@@ -795,7 +941,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository avatar'
-      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getRepositoryAvatar'
       produces:
       - application/octet-stream
@@ -814,7 +960,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Set repository avatar'
-      description: 'Set the avatar for repository {group}/{repo}. For this operation the client needs WRITE access on {group}/{repo}'
+      description: 'Set the avatar for repository {group}/{repo}. For this operation the client needs permission to WRITE on {group}/{repo}'
       operationId: 'setRepositoryAvatar'
       consumes:
       - multipart/form-data
@@ -839,7 +985,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository meta information'
-      description: 'Loads meta information for repository {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads meta information for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getRepositoryMetaInfo'
       produces:
       - application/json
@@ -864,7 +1010,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Export a repository (migrate)'
-      description: 'Exports the repository for migration to another collaboration server (only data and repo info is exported, comments and membership information are dropped). For this operation the client needs READ access on {group}/{repo}'
+      description: 'Exports the repository for migration to another collaboration server (only data and repo info is exported, comments and membership information are dropped). For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'exportRepsitory'
       produces:
       - application/octet-stream
@@ -887,7 +1033,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Import data into an empty repository'
-      description: 'Imports either an exported repository from another collaboration server or a JSON-LD zip file exported from openLCA. If the repository is not empty, existing data will be overwritten. For this operation the client needs WRITE access on {group}/{repo}'
+      description: 'Imports either an exported repository from another collaboration server or a JSON-LD zip file exported from openLCA. If the repository is not empty, existing data will be overwritten. For this operation the client needs permission to WRITE on {group}/{repo}'
       operationId: 'importRepsitory'
       consumes:
       - multipart/form-data
@@ -922,7 +1068,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Move an existing repository'
-      description: 'Move repository {group}/{repo} to {newGroup}/{newRepo} or rename it within the same group if {group}={newGroup}. For this operation the client needs WRITE access on {newGroup} and READ access on {group}/{repo}'
+      description: 'Move repository {group}/{repo} to {newGroup}/{newRepo} or rename it within the same group if {group}={newGroup}. For this operation the client needs permission to WRITE on {newGroup} and permission to READ on {group}/{repo}'
       operationId: 'moveRepository'
       produces:
       - application/json
@@ -957,7 +1103,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Clone an existing repository'
-      description: 'Clone an existing repository to {newGroup}. For this operation the client needs WRITE access on {newGroup} and READ access on {group}/{repo}'
+      description: 'Clone an existing repository to {newGroup}. For this operation the client needs permission to WRITE on {newGroup} and permission to READ on {group}/{repo}'
       operationId: 'cloneRepository'
       produces:
       - application/json
@@ -992,12 +1138,12 @@ paths:
           $ref: '#/responses/UnsupportedSchema'
         409:
           description: 'A repository {newGroup}/{newRepo} already exists'
-  /ws/repository/settings/{group}/{setting}/{value}:
+  /ws/repository/settings/{group}/{repo}/{setting}/{value}:
     put:
       tags:
       - 'Repository'
       summary: 'Change a setting of the repository'
-      description: 'Change the value of {setting} to {value}. For this operation the client needs WRITE access on {newGroup}/{newRepo}'
+      description: 'Change the value of {setting} to {value}. For this operation the client needs permission to WRITE on {newGroup}/{newRepo}'
       operationId: 'setRepositorySetting'
       parameters:
       - $ref: '#/parameters/group'
@@ -1025,9 +1171,9 @@ paths:
   /ws/membership/{group}:
     get:
       tags:
-      - 'Membership'
+      - 'Membership (Group)'
       summary: 'Get memberships for a group'
-      description: 'Get all memberships for group {group}. For this operation the client needs READ access on {group}'
+      description: 'Get all memberships for group {group}. For this operation the client needs permission to READ on {group}'
       operationId: 'getGroupMemberships'
       parameters:
       - $ref: '#/parameters/group'
@@ -1044,12 +1190,132 @@ paths:
           $ref: '#/responses/NoReadPermGroup'
         404:
           $ref: '#/responses/GroupNotFound'
+  /ws/membership/{group}/user/{username}/{role}:
+    post:
+      tags:
+      - 'Membership (Group)'
+      summary: 'Add a user to a group'
+      description: 'Add user {username} to group {group} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      operationId: 'addUserMembershipForGroup'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/username'
+      - $ref: '#/parameters/role'
+      responses:
+        201:
+          description: 'User {username} was added to group {group} with role {role}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePermGroup'
+        404:
+          $ref: '#/responses/GroupNotFound'
+        409:
+          description: 'User {username} already is a direct member of {group}'
+    put:
+      tags:
+      - 'Membership (Group)'
+      summary: 'Update a users role in a group'
+      description: 'Update the role of user {username} in group {group} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      operationId: 'updateUserMembershipForGroup'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/username'
+      - $ref: '#/parameters/role'
+      responses:
+        200:
+          description: 'The role of user {username} was changed to {role} in group {group}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePermGroup'
+        404:
+          description: 'Group {group} not found or user {username} is not a member'
+  /ws/membership/{group}/user/{username}:
+    delete:
+      tags:
+      - 'Membership (Group)'
+      summary: 'Delete a user from a group'
+      description: 'Deletes the user {username} from group {group}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      operationId: 'deleteUserMembershipForGroup'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/username'
+      responses:
+        200:
+          description: 'User {username} was deletes from group {group}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePermGroup'
+        404:
+          description: 'Group {group} not found or {username} is not a member'
+  /ws/membership/{group}/team/{teamname}/{role}:
+    post:
+      tags:
+      - 'Membership (Group)'
+      summary: 'Add a team to a group'
+      description: 'Add team {teamname} to group {group} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      operationId: 'addTeamMembershipForGroup'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/teamname'
+      - $ref: '#/parameters/role'
+      responses:
+        201:
+          description: 'Team {teamname} was added to group {group} with role {role}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePermGroup'
+        404:
+          $ref: '#/responses/GroupNotFound'
+        409:
+          description: 'Team {teamname} already is a direct member of group {group}'
+    put:
+      tags:
+      - 'Membership (Group)'
+      summary: 'Update a teams role in a group'
+      description: 'Update the role of team {teamname} in group {group} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      operationId: 'updateTeamMembershipForGroup'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/teamname'
+      - $ref: '#/parameters/role'
+      responses:
+        200:
+          description: 'The role of team {teamname} was changed to {role} in repository {group}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePermGroup'
+        404:
+          description: 'Group {group} not found or team {teamname} is not a member'
+  /ws/membership/{group}/team/{teamname}:
+    delete:
+      tags:
+      - 'Membership (Group)'
+      summary: 'Delete a team from a group'
+      description: 'Deletes the team {teamname} from group {group}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      operationId: 'deleteTeamMembershipForGroup'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/teamname'
+      responses:
+        200:
+          description: 'Team {teamname} was deletes from group {group}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePermGroup'
+        404:
+          description: 'group {group} not found or {teamname} is not a member'
   /ws/membership/{group}/{repo}:
     get:
       tags:
-      - 'Membership'
+      - 'Membership (Repository)'
       summary: 'Get memberships for a repository'
-      description: 'Get all memberships for repository {group}/{repo}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Get all memberships for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'getRepositoryMemberships'
       parameters:
       - $ref: '#/parameters/group'
@@ -1065,12 +1331,150 @@ paths:
           $ref: '#/responses/RepoNotFound'
         406:
           $ref: '#/responses/UnsupportedSchema'
+  /ws/membership/{group}/{repo}/user/{username}/{role}:
+    post:
+      tags:
+      - 'Membership (Repository)'
+      summary: 'Add a user to a repository'
+      description: 'Add user {username} to repository {group}/{repo} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      operationId: 'addUserMembershipForRepository'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/username'
+      - $ref: '#/parameters/role'
+      responses:
+        201:
+          description: 'User {username} was added to repository {group}/{repo} with role {role}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        409:
+          description: 'User {username} already is a direct member of repository {group}/{repo}'
+    put:
+      tags:
+      - 'Membership (Repository)'
+      summary: 'Update a users role in a repository'
+      description: 'Update the role of user {username} in repository {group}/{repo} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      operationId: 'updateUserMembershipForRepository'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/username'
+      - $ref: '#/parameters/role'
+      responses:
+        200:
+          description: 'The role of user {username} was changed to {role} in repository {group}/{repo}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePerm'
+        404:
+          description: 'Repository {group}/{repo} not found or user {username} is not a member'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/membership/{group}/{repo}/user/{username}:
+    delete:
+      tags:
+      - 'Membership (Repository)'
+      summary: 'Delete a user from a repository'
+      description: 'Deletes the user {username} from repository {group}/{repo}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      operationId: 'deleteUserMembershipForRepository'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/username'
+      responses:
+        200:
+          description: 'User {username} was deletes from repository {group}/{repo}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePerm'
+        404:
+          description: 'Repository {group}/{repo} not found or {username} is not a member'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/membership/{group}/{repo}/team/{teamname}/{role}:
+    post:
+      tags:
+      - 'Membership (Repository)'
+      summary: 'Add a team to a repository'
+      description: 'Add team {teamname} to repository {group}/{repo} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      operationId: 'addTeamMembershipForRepository'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/teamname'
+      - $ref: '#/parameters/role'
+      responses:
+        201:
+          description: 'Team {teamname} was added to repository {group}/{repo} with role {role}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        409:
+          description: 'Team {teamname} already is a direct member of repository {group}/{repo}'
+    put:
+      tags:
+      - 'Membership (Repository)'
+      summary: 'Update a teams role in a repository'
+      description: 'Update the role of team {teamname} in repository {group}/{repo} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      operationId: 'updateTeamMembershipForRepository'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/teamname'
+      - $ref: '#/parameters/role'
+      responses:
+        200:
+          description: 'The role of team {teamname} was changed to {role} in repository {group}/{repo}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePerm'
+        404:
+          description: 'Repository {group}/{repo} not found or team {teamname} is not a member'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/membership/{group}/{repo}/team/{teamname}:
+    delete:
+      tags:
+      - 'Membership (Repository)'
+      summary: 'Delete a team from a repository'
+      description: 'Deletes the team {teamname} from repository {group}/{repo}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      operationId: 'deleteTeamMembershipForRepository'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/teamname'
+      responses:
+        200:
+          description: 'Team {teamname} was deletes from repository {group}/{repo}'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoChangeRolePerm'
+        404:
+          description: 'Repository {group}/{repo} not found or {teamname} is not a member'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
   /ws/commit/request/{group}/{repo}:
     get:
       tags:
       - 'Commit'
       summary: 'Request to commit data sets'
-      description: 'Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs WRITE access on {group}/{repo}'
+      description: 'Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs permission to WRITE on {group}/{repo}'
       operationId: 'requestCommit'
       parameters:
       - $ref: '#/parameters/group'
@@ -1093,7 +1497,7 @@ paths:
       tags:
       - 'Commit'
       summary: 'Commit data sets'
-      description: 'Commits data sets to repository {group}/{repo}. For this operation the client needs WRITE access on {group}/{repo}'
+      description: 'Commits data sets to repository {group}/{repo}. For this operation the client needs permission to WRITE on {group}/{repo}'
       operationId: 'commit'
       consumes: 
       - application/octet-stream
@@ -1125,12 +1529,12 @@ paths:
           $ref: '#/responses/UnsupportedSchema'
         409:
           description: 'Out of sync, if there were other commits before the current commit, but after the commit with the specified {lastCommitId}'
-  /ws/public/fetch/data/{group}/{repo}:
+  /ws/public/fetch/data/{group}/{repo}/{type}/{refId}:
     get:
       tags:
       - 'Fetch'
       summary: 'Fetch a single data set'
-      description: 'For this operation the client needs READ access on {group}/{repo}'
+      description: 'For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'fetchDataSet'
       produces:
       - application/json
@@ -1154,7 +1558,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Request to fetch data sets'
-      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'requestFetch'
       produces:
       - 'application/json'
@@ -1188,7 +1592,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'List all references for a commit'
-      description: 'Loads data set descriptors of all data sets that were part of the commit with id {commitId}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Loads data set descriptors of all data sets that were part of the commit with id {commitId}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'fetchCommitReferences'
       produces:
       - 'application/json'
@@ -1218,7 +1622,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Fetch data sets'
-      description: 'Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}. For this operation the client needs READ access on {group}/{repo}'
+      description: 'Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}. For this operation the client needs permission to READ on {group}/{repo}'
       operationId: 'fetch'
       consumes: 
       - application/json
@@ -1252,5 +1656,214 @@ paths:
           $ref: '#/responses/NoReadPerm'
         404:
           $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/{group}/{repo}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Get commit history for a repository'
+      description: 'Loads the commit history for repository {group}/{repo}'
+      operationId: 'getRepositoryCommitHistory'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'lastCommitId'
+        description: 'If specified, only commits after the specified commit are returned'
+        in: query
+        type: string
+      responses:
+        200:
+          description: 'The commit history of repository {group}/{repo}'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commit'
+        204:
+          description: 'No commits found'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} or commit {lastCommitId} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/{group}/{repo}/{type}/{refId}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Get commit history for a data set'
+      description: 'Loads the commit history for data set {refId} of type {type} from repository {group}/{repo}'
+      operationId: 'getDatasetCommitHistory'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      responses:
+        200:
+          description: 'The commit history of data set {refId} in repository {group}/{repo}'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commit'
+        204:
+          description: 'No commits found'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} or data set {refId} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/category/{group}/{repo}/{refId}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Get commit history for a category'
+      description: 'Loads the commit history for category {refId} from repository {group}/{repo}'
+      operationId: 'getCategoryCommitHistory'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/refId'
+      responses:
+        200:
+          description: 'The commit history of category {refId} in repository {group}/{repo}'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Commit'
+        204:
+          description: 'No commits found'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} or category {refId} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/search/{group}/{repo}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Get paginated and filtered commit history'
+      description: 'Loads the commit history for repository {group}/{repo}, filtered by {filter} and paged'
+      operationId: 'searchCommitHistory'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
+      responses:
+        200:
+          description: 'The commit history for repository {group}/{repo}'
+          schema:
+            $ref: '#/definitions/CommitSearchResult'
+        204:
+          description: 'No commits found'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/references/{group}/{repo}/{commitId}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Search references of a commit'
+      description: 'Loads the data sets that were commit in commit {commitId} in repository {group}/{repo}, paged and filtered by {filter} and {type}'
+      operationId: 'getCommitReferences'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'commitId'
+        description: 'The commit id of the commit to get'
+        in: path
+        type: string
+        required: true
+      - name: 'type'
+        description: 'If set only get references of type {type}'
+        in: query
+        type: string
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
+      responses:
+        200:
+          description: 'The data sets that were committed to repository {group}/{repo} during commit {commitId}'
+          schema:
+            $ref: '#/definitions/FetchRequestDataSearchResult'
+        204:
+          description: 'No commits found'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/commit/{group}/{repo}/{commitId}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Get a commit'
+      description: 'Loads the commit {commitId} from repository {group}/{repo}'
+      operationId: 'getCommit'
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'commitId'
+        description: 'The commit id of the commit to get'
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'The commit {commitId} in repository {group}/{repo}'
+          schema:
+            $ref: '#/definitions/Commit'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} or commit {commitId} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/history/previousCommitId/{group}/{repo}/{type}/{refId}/{commitId}:
+    get:
+      tags: 
+      - 'History'
+      summary: 'Get previous commit id'
+      description: 'Looks up the id of the commit on repository {group}/{repo}, prior to the commit with id {commitId}'
+      operationId: 'getPreviousCommitId'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - name: 'commitId'
+        description: 'The id of the commit to get the predecessor for'
+        in: path
+        type: string
+        required: true
+      responses:
+        200:
+          description: 'The id of the preceeding commit'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: 'Repository {group}/{repo} or commit {commitId} not found or {commitId} was the first commit (no predecssor found)'
         406:
           $ref: '#/responses/UnsupportedSchema'
