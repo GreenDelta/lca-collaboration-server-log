@@ -13,24 +13,70 @@ definitions:
   ModelType:
     type: string
     enum: &MODEL_TYPE
-      - ACTOR
-      - CATEGORY
-      - CURRENCY
-      - DQ_SYSTEM
-      - FLOW
-      - FLOW_PROPERTY
-      - IMPACT_CATEGORY
-      - IMPACT_METHOD
-      - LOCATION
-      - NW_SET
-      - PARAMETER
-      - PROCESS
-      - PRODUCT_SYSTEM
-      - PROJECT
-      - SOURCE
-      - UNIT
-      - UNIT_GROUP
-      - SOCIAL_INDICATOR
+      - 'ACTOR'
+      - 'CATEGORY'
+      - 'CURRENCY'
+      - 'DQ_SYSTEM'
+      - 'FLOW'
+      - 'FLOW_PROPERTY'
+      - 'IMPACT_CATEGORY'
+      - 'IMPACT_METHOD'
+      - 'LOCATION'
+      - 'NW_SET'
+      - 'PARAMETER'
+      - 'PROCESS'
+      - 'PRODUCT_SYSTEM'
+      - 'PROJECT'
+      - 'SOURCE'
+      - 'UNIT'
+      - 'UNIT_GROUP'
+      - 'SOCIAL_INDICATOR'
+  FlowType:
+    type: string
+    enum: &FLOW_TYPE
+      - 'ELEMENTARY_FLOW'
+      - 'PRODUCT_FLOW'
+      - 'WASTE_FLOW'
+  ProcessType:
+    type: string
+    enum: &PROCESS_TYPE
+      - 'UNIT'
+      - 'SYSTEM'
+      - 'UNKNOWN'
+  AggregationType:
+    type: string
+    enum: &AGGREGATION_TYPE
+      - 'HORIZONTAL'
+      - 'VERTICAL'
+      - 'NONE'
+      - 'UNKNOWN'
+  ModellingApproach:
+    type: string
+    enum: &MODELLING_APPROACH
+      - 'PHYSICAL'
+      - 'ECONOMIC'
+      - 'CAUSAL'
+      - 'NONE'
+      - 'UNKNOWN'
+  ModellingPrinciple:
+    type: string
+    enum: &MODELLING_PRINCIPLE
+      - 'ATTRIBUTIONAL'
+      - 'CONSEQUENTIAL'
+      - 'UNKNOWN'  
+  LicenseType:
+    type: string
+    enum: &LICENSE_TYPE
+      - 'FREE'
+      - 'MIXED'
+      - 'CHARGED'
+      - 'UNKNOWN'    
+  IndexAction:
+    type: string
+    enum: &INDEX_ACTION
+      - 'ADD'
+      - 'UPDATE'
+      - 'DELETE'
   Credentials:
     type: object
     properties:
@@ -49,6 +95,38 @@ definitions:
     required:
       - username
       - password
+  Password:
+    type: object
+    properties:
+      password:
+        description: 'The new password'
+        type: string
+        example: 'passw0rd'
+      password2:
+        description: 'The same password, to ensure password was entered correctly'
+        type: string
+        example: 'passw0rd'
+    required:
+      - password
+      - password2
+  TwoFactorInfo:
+    type: object
+    properties:
+      url:
+        description: 'The OtpAuthTotpURL for generating a QR code'
+        type: string
+        example: 'otpauth://totp/openLCA%20Data%20Server:johndoe?secret=6HWCC6HXXN563FXX&issuer=openLCA+Data+Server'
+      key:
+        description: 'The two factor authentification secret'
+        type: string
+        example: '6HWCC6HXXN563FXX'
+      enabled:
+        description: 'True if two factor authentication is enabled'
+        type: boolean
+        default: false
+    required:
+      - url
+      - key
   AggregationResultEntry:
     type: object
     properties: 
@@ -66,6 +144,9 @@ definitions:
         type: array
         items: 
           $ref: '#/definitions/AggregationResultEntry'
+    required:
+     - key
+     - count
   AggregationResult:
     type: object
     properties: 
@@ -87,6 +168,10 @@ definitions:
         type: array
         items: 
           $ref: '#/definitions/AggregationResultEntry'
+    required:
+      - name
+      - type
+      - totalCount
   ResultInfo:
     type: object
     properties: 
@@ -98,7 +183,7 @@ definitions:
       count:
         description: 'The amount of actual results returned'
         type: integer
-        format: int32
+        format: int64
         example: '8'
       totalCount:
         description: 'The amount total results matching the query'
@@ -115,6 +200,12 @@ definitions:
         type: integer
         format: int32
         example: '8'
+    required:
+      - pageSize
+      - count
+      - totalCount
+      - currentPage
+      - pageCount
   SearchResult:
     type: object
     properties: 
@@ -126,6 +217,8 @@ definitions:
       resultInfo:
         description: 'Search result specific information'
         $ref: '#/definitions/ResultInfo'
+    required:
+      - resultInfo
   RepositoryDescriptorSearchResult:
     allOf:
     - $ref: '#/definitions/SearchResult'
@@ -134,6 +227,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/RepositoryDescriptor'
+    required:
+      - resultInfo
   GroupDescriptorSearchResult:
     allOf:
     - $ref: '#/definitions/SearchResult'
@@ -142,6 +237,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/GroupDescriptor'
+    required:
+      - resultInfo
   CommitSearchResult:
     allOf:
     - $ref: '#/definitions/SearchResult'
@@ -150,6 +247,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Commit'
+    required:
+      - resultInfo
   FetchRequestDataSearchResult:
     allOf:
     - $ref: '#/definitions/SearchResult'
@@ -158,6 +257,18 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/FetchRequestData'
+    required:
+      - resultInfo
+  IndexEntrySearchResult:
+    allOf:
+    - $ref: '#/definitions/SearchResult'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/IndexEntry'
+    required:
+      - resultInfo
   UserDescriptor:
     type: object
     properties:
@@ -169,6 +280,9 @@ definitions:
         description: 'A display name for the user'
         type: string
         example: 'John Doe'
+    required:
+      - username
+      - name
   UserSettings:
     type: object
     properties:
@@ -230,12 +344,6 @@ definitions:
       id: 
         type: string
         example: '15'
-      username:
-        type: string
-        example: 'johndoe'
-      name:
-        type: string
-        example: 'John Doe'
       email:
         type: string
         example: 'john.doe@company.com'
@@ -245,6 +353,9 @@ definitions:
         default: false
       settings:
         $ref: '#/definitions/UserSettings'
+    required:
+      - id
+      - email
   CurrentUser:
     allOf: 
     - $ref: '#/definitions/User'
@@ -270,6 +381,9 @@ definitions:
         description: 'A display label for the team'
         type: string
         example: 'GreenDelta GmbH'
+    required:
+      - teamname
+      - name
   Team:
     allOf:
     - $ref: '#/definitions/TeamDescriptor'
@@ -279,6 +393,8 @@ definitions:
           type: integer
           format: int64
           example: 3
+    required:
+      - id
   GroupDescriptor:
     type: object
     properties:
@@ -286,6 +402,8 @@ definitions:
         description: 'The name of the group'
         type: string
         example: 'examples'
+    required:
+      - name
   Group:
     allOf: 
     - $ref: '#/definitions/GroupDescriptor'
@@ -343,6 +461,9 @@ definitions:
         default: false
       settings:
         $ref: '#/definitions/RepositorySettings'
+    required:
+      - group
+      - name
   RepositoryMetaInfo:
     type: object
     properties:
@@ -350,6 +471,8 @@ definitions:
         description: 'The JSON-LD schema version of this repository'
         type: string
         example: 'http://openlca.org/schema/v1.1/'
+    required:
+      - schemaVersion
   Repository:
     allOf: 
     - $ref: '#/definitions/RepositoryDescriptor'
@@ -386,11 +509,11 @@ definitions:
   Role:
     type: string
     enum: &ROLES
-      - READER
-      - CONTRIBUTOR
-      - REVIEWER
-      - EDITOR
-      - OWNER
+      - 'READER'
+      - 'CONTRIBUTOR'
+      - 'REVIEWER'
+      - 'EDITOR'
+      - 'OWNER'
   Membership:
     type: object
     properties:
@@ -411,6 +534,9 @@ definitions:
         allOf:
         - $ref: '#/definitions/TeamDescriptor'
         - description: 'The team this membership is applying to (or null if its a user membership)'
+    required:
+      - memberOf
+      - role
   Commit:
     type: object
     properties:
@@ -435,6 +561,12 @@ definitions:
         description: 'The display name of the user that performed the commit or the username if the user does not exist anymore'
         type: string
         example: 'John Doe'
+    required:
+      - id
+      - message
+      - user
+      - timestamp
+      - userDisplayName
   FileReference:
     type: object
     properties:
@@ -450,6 +582,31 @@ definitions:
     required:
       - type
       - refId
+  Reference:
+    type: object
+    properties:
+      id: 
+        description: 'The id of the reference'
+        type: string
+        example: '64b169d2-7d05-4c69-a5a0-90782d874ed2'
+      type:
+        description: 'The model type of the reference'
+        type: string
+        enum: *MODEL_TYPE
+        example: 'ACTOR'
+      name: 
+        description: 'The name of the reference'
+        type: string
+        example: 'John Doe'
+      commitId: 
+        description: 'The commit id of the reference'
+        type: string
+        example: '90782d87-7d05-4c69-a5a0-8a5a0d874c69'
+    required:
+      - id
+      - type
+      - name
+      - commitId
   Dataset:
     allOf: 
     - $ref: '#/definitions/FileReference'
@@ -498,6 +655,196 @@ definitions:
           description: 'Indicates if the data set was added in the last commit'
           type: boolean
           default: false
+  GLADInput:
+    type: object
+    properties:
+      dataprovider:
+        description: 'The name of the data provider of the selected data sets (will be used in GLAD)'
+        type: string
+        example: 'GreenDelta GmbH'
+      references:
+        type: array
+        items:
+          $ref: '#/definitions/Reference'
+  IndexEntry:
+    allOf:
+    - $ref: '#/definitions/Dataset'
+    - properties: 
+        repositoryId:
+          description: 'The id of the repository of the entry'
+          type: string
+          example: 'examples/reference_data'
+        group:
+          description: 'The name of the group of the repository the entry'
+          type: string
+          example: 'examples'
+        action:
+          description: 'The type of change of the entry, "ADD" if the data set was added in this commit, "UPDATE" if the data set existed before and "DELETE" if the data set was deleted in this commit'
+          type: string
+          enum: *INDEX_ACTION
+          example: 'UPDATE'
+        commitId:
+          description: 'The id of the commit of the entry'
+          type: string
+          example: '43a523f2-057d-a05a-694c-2d89078724ed'
+        commitMessage:
+          description: 'The message that was specified when the commit was executed'
+          type: string
+          example: 'Initial commit'
+        commitTimestamp:
+          description: 'The time when the commit was executed'
+          type: integer
+          format: int64
+          example: '1552893525562'
+        mostRecent:
+          description: 'Indicates if this is the most recent entry in the index, if false, newer versions of the data set exist'
+          type: boolean
+          default: false
+        fullPath:
+          description: 'The full category path including the name of the element at last, concatenated with a slash'
+          type: string
+          example: 'root_category/parent_category/category/dataset_name'
+        category:
+          description: 'The full category path of the element, concatenated with a slash'
+          type: string
+          example: 'root_category/parent_category/category'
+        categoryPaths:
+          description: 'The category (path) as all combinations (used to aggregate by results)'
+          type: array
+          items: 
+            type: string
+          example: '[root_category, root_category/parent_category, root_category/parent_category/category]'
+      required:
+        - repositoryId
+        - group
+        - action
+  FlowEntry:
+    allOf:
+    - $ref: '#/definitions/IndexEntry'
+    - properties:
+        flowType:
+          description: 'The type of flow'
+          type: string
+          enum: *FLOW_TYPE
+          example: 'ELEMENTARY_FLOW'
+      required:
+        - flowType      
+  ProcessEntry:
+    allOf:
+    - $ref: '#/definitions/IndexEntry'
+    - properties:
+        processType:
+          description: 'The type of process'
+          type: string
+          enum: *PROCESS_TYPE
+          example: 'UNIT' 
+        completeness:
+          description: 'A text describing the completeness'
+          type: string
+        sampleRepresentativeness:
+          description: 'A text describing the representativeness of the samples'
+          type: string
+        samplingProcedure:
+          description: 'A text describing the sampling procedure'
+          type: string
+        validFrom:
+          type: integer
+          format: int64
+          description: 'The start of the validity of the data set in milliseconds since 01/01/1970 (unix-time tims 1000)'
+          example: '1552893525562'
+        validUntil:
+          type: integer
+          format: int64
+          description: 'The end of the validity of the data set in milliseconds  since 01/01/1970 (unix-time tims 1000)'
+          example: '1552893525563'
+        validFromYear:
+          type: integer
+          format: int32
+          description: 'The year of the start of the validity of the data set, will be taken from validFrom if not set'
+          example: '2010'
+        validUntilYear:
+          type: integer
+          format: int32
+          description: 'The year of the end of the validity of the data set, will be taken from validUntil if not set'
+          example: '2019'
+        location:
+          type: string
+          description: 'The name of the location'
+          example: 'Switzerland'
+        locationCode:
+          type: string
+          description: 'The code of the location'
+          example: 'CH'
+        technology:
+          type: string
+          description: A description of the technology used in the data set
+        description:
+          type: string
+          description: 'A description'
+        supportedNomenclatures:
+          description: 'The nomenclatures, the data set is compliant to'
+          type: array
+          items:
+            type: string
+            enum: ['ILCD']
+        representativeness:
+          description: 'A text describing the representativenes'
+          type: string
+        modellingPrinciple:
+          type: string
+          enum: *MODELLING_PRINCIPLE
+          default: 'UNKNOWN'
+        modellingApproach:
+          type: string
+          enum: *MODELLING_APPROACH
+          default: 'UNKNOWN'
+        biogenicCarbon:
+          description: 'A text describing the biogenic carbon modelling'
+          type: string
+        reviewed:
+          description: 'Indicates if the data set was reviewed or not'
+          type: boolean
+          default: false
+        reviewer:
+          description: 'The name of the reviewer'
+          type: string
+          example: 'John Doe'
+        aggregationType:
+          type: string
+          enum: *AGGREGATION_TYPE  
+          default: 'UNKNOWN'
+        copyrightProtected:
+          description: 'Indicates if the data set is copyright protected or not'
+          type: boolean
+          default: false
+        copyrightHolder:
+          description: 'The name of the copyright holder'
+          type: string
+          example: 'John Doe'
+        licenseType:
+          description: 'The type of license'
+          type: string
+          enum: *LICENSE_TYPE
+          default: 'UNKNOWN'
+        license:
+          description: 'A license description'
+          type: string
+        contact:
+          description: 'The name of the contact person'
+          type: string
+          example: 'John Doe'        
+        inputs:
+          description: 'A list of flow ids that are an input of the process'
+          type: array
+          items:
+            type: string
+        outputs:
+          description: 'A list of flow ids that are an output of the process'
+          type: array
+          items:
+            type: string
+      required:
+        - processType
 parameters:
   group:
     name: 'group'
@@ -570,25 +917,29 @@ responses:
   NotLoggedIn:
     description: 'Not authenticated'
   NoReadPerm:
-    description: 'No permission to READ on {group}/{repo}'
+    description: 'No permission to READ in {group}/{repo}'
   NoReadPermGroup:
-    description: 'No permission to READ on {group}'
+    description: 'No permission to READ in {group}'
   NoWritePerm:
-    description: 'No permission to WRITE on {group}/{repo}'
+    description: 'No permission to WRITE in {group}/{repo}'
   NoWritePermGroup:
-    description: 'No permission to WRITE on {group}'
+    description: 'No permission to WRITE in {group}'
   NoDeletePerm:
     description: 'No permission to DELETE {group}/{repo}'
   NoChangeRolePerm:
-    description: 'No permission to CHANGE_ROLE on {group}/{repo}'
+    description: 'No permission to CHANGE_ROLE in {group}/{repo}'
   NoChangeRolePermGroup:
-    description: 'No permission to CHANGE_ROLE on {group}'
+    description: 'No permission to CHANGE_ROLE in {group}'
   RepoNotFound:
-    description: 'Repository {group}/{repo} not found'
+    description: '{group}/{repo} not found'
   GroupNotFound:
-    description: 'Group {group} not found'
+    description: '{group} not found'
+  UserNotFound:
+    description: '{username} not found'
   UnsupportedSchema:
     description: 'Repository json schema version is not supported'
+  NotUserManager:
+    description: 'Not a user manager'
 paths:
   /ws/public:
     get:
@@ -657,7 +1008,7 @@ paths:
       - $ref: '#/parameters/pageSize'
       - $ref: '#/parameters/filter'
       - name: 'onlyIfCanWrite'
-        description: 'If true only groups the client has permission to WRITE to are  returned'
+        description: 'If true only groups the client has permission to WRITE to are returned'
         in: query
         type: boolean
         default: false
@@ -673,7 +1024,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Get group settings'
-      description: 'Loads settings and permissions of {group}. For this operation the client needs permission to READ on {group}'
+      description: 'Loads settings and permissions of {group}. For this operation the client needs permission to READ in {group}'
       operationId: 'getGroup'
       produces:
       - application/json
@@ -687,12 +1038,12 @@ paths:
         403:
           $ref: '#/responses/NoReadPermGroup'
         404:
-          description: 'Group {group} not found'
+          description: '{group} not found'
     post:
       tags:
       - 'Group'
       summary: 'Create a new group'
-      description: 'Creates a new group with name {name}. For this operation the client needs general permission to create groups'
+      description: 'Creates a new group with {name}. For this operation the client needs general permission to create groups'
       operationId: 'createGroup'
       produces:
       - application/json
@@ -713,7 +1064,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Delete a group'
-      description: 'Deletes group {group} and all containing repositories. For this operation the client needs permission to DELETE to {group}'
+      description: 'Deletes {group} and all containing repositories. For this operation the client needs permission to DELETE {group}'
       operationId: 'deleteGroup'
       responses:
         200:
@@ -733,13 +1084,13 @@ paths:
       tags:
       - 'Group'
       summary: 'Get group avatar'
-      description: 'Loads the avatar for group {group}. For this operation the client needs permission to READ on {group}'
+      description: 'Loads the avatar for {group}. For this operation the client needs permission to READ in {group}'
       operationId: 'getGroupAvatar'
       produces:
       - application/octet-stream
       responses:
         200:
-          description: 'Returns the avatar for group {group} as byte array'
+          description: 'Returns the avatar for {group} as byte array'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -750,7 +1101,7 @@ paths:
       tags:
       - 'Group'
       summary: 'Set group avatar'
-      description: 'Set the avatar for group {group}. For this operation the client needs permission to WRITE on {group}'
+      description: 'Set the avatar for {group}. For this operation the client needs permission to WRITE in {group}'
       operationId: 'setGroupAvatar'
       consumes:
       - multipart/form-data
@@ -776,7 +1127,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get public repository settings'
-      description: 'Loads settings of the specified repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads settings of {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getPublicRepository'
       produces:
       - application/json
@@ -785,7 +1136,7 @@ paths:
       - $ref: '#/parameters/repo'
       responses:
         200:
-          description: 'Returns the settings for repository {group}/{repo}'
+          description: 'Returns the settings for {group}/{repo}'
           schema:
             $ref: '#/definitions/RepositoryDescriptor'
         403:
@@ -799,7 +1150,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository avatar'
-      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads the avatar for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getPublicRepositoryAvatar'
       produces:
       - application/octet-stream
@@ -808,7 +1159,7 @@ paths:
       - $ref: '#/parameters/repo'
       responses:
         200:
-          description: 'Returns the avatar for repository {group}/{repo} as byte array'
+          description: 'Returns the avatar for {group}/{repo} as byte array'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
@@ -820,7 +1171,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository file'
-      description: 'Loads the file {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getRepositoryFile'
       produces:
       - application/octet-stream
@@ -837,11 +1188,11 @@ paths:
         required: true
       responses:
         200:
-          description: 'Returns the file {filename} from data set {type}/{refId} for {commitId} in repository {group}/{repo} as byte array'
+          description: 'Returns {filename} from data set {type}/{refId} for {commitId} in {group}/{repo} as byte array'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo}, data set {type}/{refId} commit {commitId} or file {filename} not found'
+          description: '{group}/{repo}, data set {type}/{refId}, {commitId} or {filename} not found'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/repository:
@@ -878,13 +1229,13 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository settings'
-      description: 'Loads settings and permissions of the specified repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads settings and permissions of {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getRepository'
       produces:
       - application/json
       responses:
         200:
-          description: 'Returns the settings and permissions for repository {group}/{repo}'
+          description: 'Returns the settings and permissions for {group}/{repo}'
           schema:
             $ref: '#/definitions/Repository'
         401:
@@ -917,12 +1268,12 @@ paths:
         406:
           $ref: '#/responses/UnsupportedSchema'
         409:
-          description: 'A repository with the name {repo} already exists in {group}'
+          description: '{repo} already exists in {group}'
     delete:
       tags:
       - 'Repository'
       summary: 'Delete a repository'
-      description: 'Deletes repository {group}/{repo}. For this operation the client needs permission to DELETE to {group}/{repo}'
+      description: 'Deletes {group}/{repo}. For this operation the client needs permission to DELETE {group}/{repo}'
       operationId: 'deleteRepository'
       responses:
         200:
@@ -941,13 +1292,13 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository avatar'
-      description: 'Loads the avatar for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads the avatar for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getRepositoryAvatar'
       produces:
       - application/octet-stream
       responses:
         200:
-          description: 'Returns the avatar for repository {group}/{repo} as byte array'
+          description: 'Returns the avatar for {group}/{repo} as byte array'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -960,7 +1311,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Set repository avatar'
-      description: 'Set the avatar for repository {group}/{repo}. For this operation the client needs permission to WRITE on {group}/{repo}'
+      description: 'Set the avatar for {group}/{repo}. For this operation the client needs permission to WRITE in {group}/{repo}'
       operationId: 'setRepositoryAvatar'
       consumes:
       - multipart/form-data
@@ -968,7 +1319,7 @@ paths:
       - application/octet-stream
       responses:
         200:
-          description: 'Returns the avatar for repository {group}/{repo} as byte array'
+          description: 'Returns the avatar for {group}/{repo} as byte array'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -985,7 +1336,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Get repository meta information'
-      description: 'Loads meta information for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads meta information for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getRepositoryMetaInfo'
       produces:
       - application/json
@@ -1010,8 +1361,8 @@ paths:
       tags:
       - 'Repository'
       summary: 'Export a repository (migrate)'
-      description: 'Exports the repository for migration to another collaboration server (only data and repo info is exported, comments and membership information are dropped). For this operation the client needs permission to READ on {group}/{repo}'
-      operationId: 'exportRepsitory'
+      description: 'Exports {group}/{repo} for migration to another collaboration server (only data and repo info is exported, comments and membership information are dropped). For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'exportRepository'
       produces:
       - application/octet-stream
       parameters:
@@ -1033,8 +1384,8 @@ paths:
       tags:
       - 'Repository'
       summary: 'Import data into an empty repository'
-      description: 'Imports either an exported repository from another collaboration server or a JSON-LD zip file exported from openLCA. If the repository is not empty, existing data will be overwritten. For this operation the client needs permission to WRITE on {group}/{repo}'
-      operationId: 'importRepsitory'
+      description: 'Imports either an exported repository from another collaboration server or a JSON-LD zip file exported from openLCA. If {group}/{repo} is not empty, existing data will be overwritten. For this operation the client needs permission to WRITE in {group}/{repo}'
+      operationId: 'importRepository'
       consumes:
       - multipart/form-data
       parameters:
@@ -1068,7 +1419,7 @@ paths:
       tags:
       - 'Repository'
       summary: 'Move an existing repository'
-      description: 'Move repository {group}/{repo} to {newGroup}/{newRepo} or rename it within the same group if {group}={newGroup}. For this operation the client needs permission to WRITE on {newGroup} and permission to READ on {group}/{repo}'
+      description: 'Move {group}/{repo} to {newGroup}/{newRepo} or rename it within the same group if {group}={newGroup}. For this operation the client needs permission to WRITE in {newGroup} and permission to READ in {group}/{repo}'
       operationId: 'moveRepository'
       produces:
       - application/json
@@ -1076,7 +1427,7 @@ paths:
       - $ref: '#/parameters/group'
       - $ref: '#/parameters/repo'
       - name: 'newGroup'
-        description: 'The name of the group to move the repository to (if it equals the existing group, the repository is renamed'
+        description: 'The name of the group to move {group}/{repo} to (if it equals the existing group, the repository is renamed)'
         in: path
         type: string
         required: true
@@ -1087,7 +1438,7 @@ paths:
         required: true
       responses:
         200:
-          description: 'The repository was successfully moved/renamed'
+          description: '{group}/{repo} was successfully moved/renamed'
         400:
           description: '{newGroup} does not exist'
         401:
@@ -1097,13 +1448,13 @@ paths:
         406:
           $ref: '#/responses/UnsupportedSchema'
         409:
-          description: 'A repository {newGroup}/{newRepo} already exists'
+          description: '{newGroup}/{newRepo} already exists'
   /ws/repository/clone/{group}/{repo}/{commitId}/{newGroup}/{newRepo}:
     post:
       tags:
       - 'Repository'
       summary: 'Clone an existing repository'
-      description: 'Clone an existing repository to {newGroup}. For this operation the client needs permission to WRITE on {newGroup} and permission to READ on {group}/{repo}'
+      description: 'Clone an existing repository to {newGroup}. For this operation the client needs permission to WRITE in {newGroup} and permission to READ in {group}/{repo}'
       operationId: 'cloneRepository'
       produces:
       - application/json
@@ -1111,7 +1462,7 @@ paths:
       - $ref: '#/parameters/group'
       - $ref: '#/parameters/repo'
       - name: 'commitId'
-        description: 'If specified only data until commit {commitId} are cloned'
+        description: 'If specified only data until {commitId} are cloned'
         in: path
         type: string
         required: true
@@ -1137,13 +1488,13 @@ paths:
         406:
           $ref: '#/responses/UnsupportedSchema'
         409:
-          description: 'A repository {newGroup}/{newRepo} already exists'
+          description: '{newGroup}/{newRepo} already exists'
   /ws/repository/settings/{group}/{repo}/{setting}/{value}:
     put:
       tags:
       - 'Repository'
       summary: 'Change a setting of the repository'
-      description: 'Change the value of {setting} to {value}. For this operation the client needs permission to WRITE on {newGroup}/{newRepo}'
+      description: 'Change the value of {setting} to {value}. For this operation the client needs permission to WRITE in {group}/{repo}'
       operationId: 'setRepositorySetting'
       parameters:
       - $ref: '#/parameters/group'
@@ -1173,13 +1524,13 @@ paths:
       tags:
       - 'Membership (Group)'
       summary: 'Get memberships for a group'
-      description: 'Get all memberships for group {group}. For this operation the client needs permission to READ on {group}'
+      description: 'Get all memberships for {group}. For this operation the client needs permission to READ in {group}'
       operationId: 'getGroupMemberships'
       parameters:
       - $ref: '#/parameters/group'
       responses:
         200:
-          description: 'Returns a list of memberships to group {group}'
+          description: 'Returns a list of memberships to {group}'
           schema:
             type: array
             items:
@@ -1195,7 +1546,7 @@ paths:
       tags:
       - 'Membership (Group)'
       summary: 'Add a user to a group'
-      description: 'Add user {username} to group {group} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      description: 'Add {username} to {group} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}'
       operationId: 'addUserMembershipForGroup'
       parameters:
       - $ref: '#/parameters/group'
@@ -1203,7 +1554,7 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         201:
-          description: 'User {username} was added to group {group} with role {role}'
+          description: '{username} was added to {group} with {role}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1211,12 +1562,12 @@ paths:
         404:
           $ref: '#/responses/GroupNotFound'
         409:
-          description: 'User {username} already is a direct member of {group}'
+          description: '{username} already is a direct member of {group}'
     put:
       tags:
       - 'Membership (Group)'
       summary: 'Update a users role in a group'
-      description: 'Update the role of user {username} in group {group} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      description: 'Update the role of {username} in {group} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}'
       operationId: 'updateUserMembershipForGroup'
       parameters:
       - $ref: '#/parameters/group'
@@ -1224,38 +1575,38 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         200:
-          description: 'The role of user {username} was changed to {role} in group {group}'
+          description: 'The role of {username} was changed to {role} in {group}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePermGroup'
         404:
-          description: 'Group {group} not found or user {username} is not a member'
+          description: '{group} not found or {username} is not a member'
   /ws/membership/{group}/user/{username}:
     delete:
       tags:
       - 'Membership (Group)'
       summary: 'Delete a user from a group'
-      description: 'Deletes the user {username} from group {group}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      description: 'Deletes {username} from {group}. For this operation the client needs permission to CHANGE_ROLE in {group}'
       operationId: 'deleteUserMembershipForGroup'
       parameters:
       - $ref: '#/parameters/group'
       - $ref: '#/parameters/username'
       responses:
         200:
-          description: 'User {username} was deletes from group {group}'
+          description: '{username} was deletes from {group}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePermGroup'
         404:
-          description: 'Group {group} not found or {username} is not a member'
+          description: '{group} not found or {username} is not a member'
   /ws/membership/{group}/team/{teamname}/{role}:
     post:
       tags:
       - 'Membership (Group)'
       summary: 'Add a team to a group'
-      description: 'Add team {teamname} to group {group} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      description: 'Add {teamname} to {group} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}'
       operationId: 'addTeamMembershipForGroup'
       parameters:
       - $ref: '#/parameters/group'
@@ -1263,7 +1614,7 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         201:
-          description: 'Team {teamname} was added to group {group} with role {role}'
+          description: '{teamname} was added to {group} with {role}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1271,12 +1622,12 @@ paths:
         404:
           $ref: '#/responses/GroupNotFound'
         409:
-          description: 'Team {teamname} already is a direct member of group {group}'
+          description: '{teamname} already is a direct member of {group}'
     put:
       tags:
       - 'Membership (Group)'
       summary: 'Update a teams role in a group'
-      description: 'Update the role of team {teamname} in group {group} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      description: 'Update the role of {teamname} in {group} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}'
       operationId: 'updateTeamMembershipForGroup'
       parameters:
       - $ref: '#/parameters/group'
@@ -1284,45 +1635,45 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         200:
-          description: 'The role of team {teamname} was changed to {role} in repository {group}'
+          description: 'The role of {teamname} was changed to {role} in {group}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePermGroup'
         404:
-          description: 'Group {group} not found or team {teamname} is not a member'
+          description: '{group} not found or {teamname} is not a member'
   /ws/membership/{group}/team/{teamname}:
     delete:
       tags:
       - 'Membership (Group)'
       summary: 'Delete a team from a group'
-      description: 'Deletes the team {teamname} from group {group}. For this operation the client needs permission CHANGE_ROLE on {group}'
+      description: 'Deletes {teamname} from {group}. For this operation the client needs permission to CHANGE_ROLE in {group}'
       operationId: 'deleteTeamMembershipForGroup'
       parameters:
       - $ref: '#/parameters/group'
       - $ref: '#/parameters/teamname'
       responses:
         200:
-          description: 'Team {teamname} was deletes from group {group}'
+          description: '{teamname} was deletes from {group}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePermGroup'
         404:
-          description: 'group {group} not found or {teamname} is not a member'
+          description: '{group} not found or {teamname} is not a member'
   /ws/membership/{group}/{repo}:
     get:
       tags:
       - 'Membership (Repository)'
       summary: 'Get memberships for a repository'
-      description: 'Get all memberships for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Get all memberships for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getRepositoryMemberships'
       parameters:
       - $ref: '#/parameters/group'
       - $ref: '#/parameters/repo'
       responses:
         200:
-          description: 'Returns a list of memberships to repository {group}/{repo}'
+          description: 'Returns a list of memberships to {group}/{repo}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1336,7 +1687,7 @@ paths:
       tags:
       - 'Membership (Repository)'
       summary: 'Add a user to a repository'
-      description: 'Add user {username} to repository {group}/{repo} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      description: 'Add {username} to {group}/{repo} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}'
       operationId: 'addUserMembershipForRepository'
       parameters:
       - $ref: '#/parameters/group'
@@ -1345,7 +1696,7 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         201:
-          description: 'User {username} was added to repository {group}/{repo} with role {role}'
+          description: '{username} was added to {group}/{repo} with {role}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1355,12 +1706,12 @@ paths:
         406:
           $ref: '#/responses/UnsupportedSchema'
         409:
-          description: 'User {username} already is a direct member of repository {group}/{repo}'
+          description: '{username} already is a direct member of {group}/{repo}'
     put:
       tags:
       - 'Membership (Repository)'
       summary: 'Update a users role in a repository'
-      description: 'Update the role of user {username} in repository {group}/{repo} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      description: 'Update the role of {username} in {group}/{repo} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}'
       operationId: 'updateUserMembershipForRepository'
       parameters:
       - $ref: '#/parameters/group'
@@ -1369,13 +1720,13 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         200:
-          description: 'The role of user {username} was changed to {role} in repository {group}/{repo}'
+          description: 'The role of {username} was changed to {role} in {group}/{repo}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePerm'
         404:
-          description: 'Repository {group}/{repo} not found or user {username} is not a member'
+          description: '{group}/{repo} not found or {username} is not a member'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/membership/{group}/{repo}/user/{username}:
@@ -1383,7 +1734,7 @@ paths:
       tags:
       - 'Membership (Repository)'
       summary: 'Delete a user from a repository'
-      description: 'Deletes the user {username} from repository {group}/{repo}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      description: 'Deletes {username} from {group}/{repo}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}'
       operationId: 'deleteUserMembershipForRepository'
       parameters:
       - $ref: '#/parameters/group'
@@ -1391,13 +1742,13 @@ paths:
       - $ref: '#/parameters/username'
       responses:
         200:
-          description: 'User {username} was deletes from repository {group}/{repo}'
+          description: '{username} was deletes from {group}/{repo}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePerm'
         404:
-          description: 'Repository {group}/{repo} not found or {username} is not a member'
+          description: '{group}/{repo} not found or {username} is not a member'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/membership/{group}/{repo}/team/{teamname}/{role}:
@@ -1405,7 +1756,7 @@ paths:
       tags:
       - 'Membership (Repository)'
       summary: 'Add a team to a repository'
-      description: 'Add team {teamname} to repository {group}/{repo} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      description: 'Add {teamname} to {group}/{repo} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}'
       operationId: 'addTeamMembershipForRepository'
       parameters:
       - $ref: '#/parameters/group'
@@ -1414,7 +1765,7 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         201:
-          description: 'Team {teamname} was added to repository {group}/{repo} with role {role}'
+          description: '{teamname} was added to {group}/{repo} with {role}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1424,12 +1775,12 @@ paths:
         406:
           $ref: '#/responses/UnsupportedSchema'
         409:
-          description: 'Team {teamname} already is a direct member of repository {group}/{repo}'
+          description: '{teamname} already is a direct member of {group}/{repo}'
     put:
       tags:
       - 'Membership (Repository)'
       summary: 'Update a teams role in a repository'
-      description: 'Update the role of team {teamname} in repository {group}/{repo} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      description: 'Update the role of {teamname} in {group}/{repo} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}'
       operationId: 'updateTeamMembershipForRepository'
       parameters:
       - $ref: '#/parameters/group'
@@ -1438,13 +1789,13 @@ paths:
       - $ref: '#/parameters/role'
       responses:
         200:
-          description: 'The role of team {teamname} was changed to {role} in repository {group}/{repo}'
+          description: 'The role of {teamname} was changed to {role} in {group}/{repo}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePerm'
         404:
-          description: 'Repository {group}/{repo} not found or team {teamname} is not a member'
+          description: '{group}/{repo} not found or {teamname} is not a member'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/membership/{group}/{repo}/team/{teamname}:
@@ -1452,7 +1803,7 @@ paths:
       tags:
       - 'Membership (Repository)'
       summary: 'Delete a team from a repository'
-      description: 'Deletes the team {teamname} from repository {group}/{repo}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}'
+      description: 'Deletes {teamname} from {group}/{repo}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}'
       operationId: 'deleteTeamMembershipForRepository'
       parameters:
       - $ref: '#/parameters/group'
@@ -1460,13 +1811,13 @@ paths:
       - $ref: '#/parameters/teamname'
       responses:
         200:
-          description: 'Team {teamname} was deletes from repository {group}/{repo}'
+          description: '{teamname} was deletes from {group}/{repo}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoChangeRolePerm'
         404:
-          description: 'Repository {group}/{repo} not found or {teamname} is not a member'
+          description: '{group}/{repo} not found or {teamname} is not a member'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/commit/request/{group}/{repo}:
@@ -1474,14 +1825,14 @@ paths:
       tags:
       - 'Commit'
       summary: 'Request to commit data sets'
-      description: 'Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs permission to WRITE on {group}/{repo}'
+      description: 'Checks if the clients last commit id is actually the last commit to {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs permission to WRITE in {group}/{repo}'
       operationId: 'requestCommit'
       parameters:
       - $ref: '#/parameters/group'
       - $ref: '#/parameters/repo'
       responses:
         200:
-          description: 'User is in sync with repository {group}/{repo} and is allowed to commit data sets'
+          description: 'User is in sync with {group}/{repo} and is allowed to commit data sets'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1497,7 +1848,7 @@ paths:
       tags:
       - 'Commit'
       summary: 'Commit data sets'
-      description: 'Commits data sets to repository {group}/{repo}. For this operation the client needs permission to WRITE on {group}/{repo}'
+      description: 'Commits data sets to {group}/{repo}. For this operation the client needs permission to WRITE in {group}/{repo}'
       operationId: 'commit'
       consumes: 
       - application/octet-stream
@@ -1518,7 +1869,7 @@ paths:
         type: string
       responses:
         201:
-          description: 'Returns the new commit id if the data sets were successfully committed to repository {group}/{repo}'
+          description: 'Returns the new commit id if the data sets were successfully committed to {group}/{repo}'
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
@@ -1528,13 +1879,13 @@ paths:
         406:
           $ref: '#/responses/UnsupportedSchema'
         409:
-          description: 'Out of sync, if there were other commits before the current commit, but after the commit with the specified {lastCommitId}'
+          description: 'Out of sync, if there were other commits before the current commit, but after {lastCommitId}'
   /ws/public/fetch/data/{group}/{repo}/{type}/{refId}:
     get:
       tags:
       - 'Fetch'
       summary: 'Fetch a single data set'
-      description: 'For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'fetchDataSet'
       produces:
       - application/json
@@ -1546,11 +1897,11 @@ paths:
       - $ref: '#/parameters/commitId'
       responses:
         200:
-          description: 'Returns the newest data set of type {type} with reference id {refId} within repository {group}/{repo} until the specified {commitId}. See JSON-LD definition for data set structure'
+          description: 'Returns the newest data set of {type} with {refId} within {group}/{repo} until {commitId}. See JSON-LD definition for data set structure'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} not found or no data set with given type, refId & (optional) commit id found in it'
+          description: '{group}/{repo} not found or no data set with given type, refId & (optional) commit id found in it'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/public/fetch/request/{group}/{repo}:
@@ -1558,7 +1909,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Request to fetch data sets'
-      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads data set descriptors to be fetched in a subsequent "fetch" invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'requestFetch'
       produces:
       - 'application/json'
@@ -1576,7 +1927,7 @@ paths:
         default: false
       responses:
         200:
-          description: 'Returns all data set descriptors for data sets commited to the {group}/{repo} since {lastCommitId}'
+          description: 'Returns all data set descriptors for data sets commited to {group}/{repo} since {lastCommitId}'
           schema:
             $ref: '#/definitions/FetchRequestData'
         204:
@@ -1592,7 +1943,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'List all references for a commit'
-      description: 'Loads data set descriptors of all data sets that were part of the commit with id {commitId}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Loads data set descriptors of all data sets that were part of {commitId}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'fetchCommitReferences'
       produces:
       - 'application/json'
@@ -1606,7 +1957,7 @@ paths:
         required: true
       responses:
         200:
-          description: 'Returns all data set descriptors for data sets commited to the {group}/{repo} in commit {commitId}'
+          description: 'Returns all data set descriptors for data sets commited to {group}/{repo} in {commitId}'
           schema:
             type: array
             items:
@@ -1614,7 +1965,7 @@ paths:
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} not found or no commit with id {commitId} found'
+          description: '{group}/{repo} not found or no commit with id {commitId} found'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/public/fetch/{group}/{repo}:
@@ -1622,7 +1973,7 @@ paths:
       tags:
       - 'Fetch'
       summary: 'Fetch data sets'
-      description: 'Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}. For this operation the client needs permission to READ on {group}/{repo}'
+      description: 'Fetches all data sets for {group}/{repo} that were added after/until {commitId}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'fetch'
       consumes: 
       - application/json
@@ -1663,7 +2014,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Get commit history for a repository'
-      description: 'Loads the commit history for repository {group}/{repo}'
+      description: 'Loads the commit history for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getRepositoryCommitHistory'
       produces:
       - application/json
@@ -1676,17 +2027,19 @@ paths:
         type: string
       responses:
         200:
-          description: 'The commit history of repository {group}/{repo}'
+          description: 'The commit history of {group}/{repo}'
           schema:
             type: array
             items:
               $ref: '#/definitions/Commit'
         204:
           description: 'No commits found'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} or commit {lastCommitId} not found'
+          description: '{group}/{repo} or commit {lastCommitId} not found'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/history/{group}/{repo}/{type}/{refId}:
@@ -1694,7 +2047,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Get commit history for a data set'
-      description: 'Loads the commit history for data set {refId} of type {type} from repository {group}/{repo}'
+      description: 'Loads the commit history for data set {refId} of {type} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getDatasetCommitHistory'
       produces:
       - application/json
@@ -1705,17 +2058,19 @@ paths:
       - $ref: '#/parameters/refId'
       responses:
         200:
-          description: 'The commit history of data set {refId} in repository {group}/{repo}'
+          description: 'The commit history of data set {refId} in {group}/{repo}'
           schema:
             type: array
             items:
               $ref: '#/definitions/Commit'
         204:
           description: 'No commits found'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} or data set {refId} not found'
+          description: '{group}/{repo} or data set {refId} not found'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/history/category/{group}/{repo}/{refId}:
@@ -1723,7 +2078,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Get commit history for a category'
-      description: 'Loads the commit history for category {refId} from repository {group}/{repo}'
+      description: 'Loads the commit history for category {refId} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getCategoryCommitHistory'
       produces:
       - application/json
@@ -1733,17 +2088,19 @@ paths:
       - $ref: '#/parameters/refId'
       responses:
         200:
-          description: 'The commit history of category {refId} in repository {group}/{repo}'
+          description: 'The commit history of category {refId} in {group}/{repo}'
           schema:
             type: array
             items:
               $ref: '#/definitions/Commit'
         204:
           description: 'No commits found'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} or category {refId} not found'
+          description: '{group}/{repo} or category {refId} not found'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/history/search/{group}/{repo}:
@@ -1751,7 +2108,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Get paginated and filtered commit history'
-      description: 'Loads the commit history for repository {group}/{repo}, filtered by {filter} and paged'
+      description: 'Loads the commit history for {group}/{repo}, filtered by {filter} and paged. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'searchCommitHistory'
       produces:
       - application/json
@@ -1763,11 +2120,13 @@ paths:
       - $ref: '#/parameters/filter'
       responses:
         200:
-          description: 'The commit history for repository {group}/{repo}'
+          description: 'The commit history for {group}/{repo}'
           schema:
             $ref: '#/definitions/CommitSearchResult'
         204:
           description: 'No commits found'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
@@ -1779,7 +2138,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Search references of a commit'
-      description: 'Loads the data sets that were commit in commit {commitId} in repository {group}/{repo}, paged and filtered by {filter} and {type}'
+      description: 'Loads the data sets that were {commitId} in {group}/{repo}, paged and filtered by {filter} and {type}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getCommitReferences'
       produces:
       - application/json
@@ -1800,11 +2159,13 @@ paths:
       - $ref: '#/parameters/filter'
       responses:
         200:
-          description: 'The data sets that were committed to repository {group}/{repo} during commit {commitId}'
+          description: 'The data sets that were committed to {group}/{repo} during {commitId}'
           schema:
             $ref: '#/definitions/FetchRequestDataSearchResult'
         204:
           description: 'No commits found'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
@@ -1816,7 +2177,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Get a commit'
-      description: 'Loads the commit {commitId} from repository {group}/{repo}'
+      description: 'Loads {commitId} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getCommit'
       produces:
       - application/json
@@ -1830,13 +2191,15 @@ paths:
         required: true
       responses:
         200:
-          description: 'The commit {commitId} in repository {group}/{repo}'
+          description: 'Return {commitId} in {group}/{repo}'
           schema:
             $ref: '#/definitions/Commit'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} or commit {commitId} not found'
+          description: '{group}/{repo} or {commitId} not found'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/history/previousCommitId/{group}/{repo}/{type}/{refId}/{commitId}:
@@ -1844,7 +2207,7 @@ paths:
       tags: 
       - 'History'
       summary: 'Get previous commit id'
-      description: 'Looks up the id of the commit on repository {group}/{repo}, prior to the commit with id {commitId}'
+      description: 'Looks up the id of the commit on {group}/{repo}, prior to {commitId}. For this operation the client needs permission to READ in {group}/{repo}'
       operationId: 'getPreviousCommitId'
       produces:
       - text/plain
@@ -1861,9 +2224,642 @@ paths:
       responses:
         200:
           description: 'The id of the preceeding commit'
+        401:
+          $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoReadPerm'
         404:
-          description: 'Repository {group}/{repo} or commit {commitId} not found or {commitId} was the first commit (no predecssor found)'
+          description: '{group}/{repo} or {commitId} not found or {commitId} was the first commit (no predecssor found)'
         406:
           $ref: '#/responses/UnsupportedSchema'
+  /ws/public/search:
+    get:
+      tags:
+      - 'Search'
+      summary: 'Search data sets'
+      description: 'Searches for data sets across the collaboration server'
+      operationId: 'searchDatasets'
+      produces:
+      - application/json
+      parameters:
+      - name: 'query'
+        description: 'Filter results by text'
+        in: query
+        type: string
+      - name: 'group'
+        description: 'Filter by group name (exact matches)'
+        in: query
+        type: string
+      - name: 'repositoryId'
+        description: 'Filter by repositoryId (group/repo) (exact matches)'
+        in: query
+        type: string
+      - name: 'type'
+        description: 'Filter by model type (exact matches)'
+        enum: *MODEL_TYPE
+        in: query
+        type: string
+      - name: 'categoryPaths'
+        description: 'Filter by category path (exact matches, only applies if type is set)'
+        in: query
+        type: string
+      - name: 'flowType'
+        description: 'Filter by flow type (exact matches, only applies if type=FLOW)'
+        enum: *FLOW_TYPE
+        in: query
+        type: string
+      - name: 'processType'
+        description: 'Filter by process type (exact matches, only applies if type=PROCESS)'
+        enum: *PROCESS_TYPE
+        in: query
+        type: string
+      - name: 'modellingApproach'
+        description: 'Filter by modellingApproach (exact matches, only applies if type=PROCESS)'
+        enum: *MODELLING_APPROACH
+        in: query
+        type: string
+      - name: 'validFromYear'
+        description: 'Filter by validFromYear (exact matches, only applies if type=PROCESS)'
+        in: query
+        type: integer
+        format: int64
+      - name: 'validUntilYear'
+        description: 'Filter by validUntilYear (exact matches, only applies if type=PROCESS)'
+        in: query
+        type: integer
+        format: int64
+      - name: 'location'
+        description: 'Filter by location (exact matches, only applies if type=PROCESS)'
+        in: query
+        type: string
+      - name: 'contact'
+        description: 'Filter by contact (exact matches, only applies if type=PROCESS)'
+        in: query
+        type: string
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      responses:
+        200:
+          description: 'Returns all data sets that were found for the given criteria, flow data sets will be returned as FlowIndexEntry, process data sets will be returned as ProcessIndexEntry, other data sets will be returned as (default) IndexEntry'
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IndexEntrySearchResult'
+  /ws/public/search/flowLinks/{flowRefId}:
+    get:
+      tags:
+      - 'Search'
+      summary: 'Search flow links'
+      description: 'Searches for data sets that either produce, emit or consume {flowRefId}'
+      operationId: 'searchFlowLinks'
+      produces:
+      - application/json
+      parameters:
+      - name: 'flowRefId'
+        description: 'The ref id of the flow to search links for'
+        in: path
+        type: string
+        required: true
+      - $ref: '#/parameters/commitId'
+      - name: 'direction'
+        description: 'Filter by flow direction'
+        in: query
+        type: string
+        enum: ['in', 'out', 'both']
+      - name: 'repositoryId'
+        description: 'Filter by repository id (group/repo)'
+        in: query
+        type: string
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
+      responses:
+        200:
+          description: 'Returns all data sets that meet {refId} and optional filters'
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/IndexEntrySearchResult'
+  /ws/public/download/json/prepare/{group}/{repo}:
+    get:
+      tags: 
+      - 'Download (JSON-LD)'
+      summary: 'Prepare download of a repository'
+      description: 'Collects and compresses data sets in {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareJsonDownloadMultiPath'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/commitId'
+      - name: 'path'
+        description: 'A category path to filter the data sets to export'
+        in: query
+        type: string
+      responses:
+        200:
+          description: 'Returns the token to download the prepared zip-archive. see Download (JSON-LD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+    post:
+      tags: 
+      - 'Download (JSON-LD)'
+      summary: 'Prepare download of a repository (direct selection with category children)'
+      description: 'Collects and compresses data sets in {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareJsonDownloadMultiCategories'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/commitId'
+      - name: 'body'
+        description: 'The elements to export, if this element is a category, all children will be collected and exported'
+        in: body
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Reference'
+      responses:
+        200:
+          description: 'Returns the token to download the prepared zip-archive. see Download (JSON-LD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+    put:
+      tags: 
+      - 'Download (JSON-LD)'
+      summary: 'Prepare download of a repository (direct selection without category children)'
+      description: 'Collects and compresses data sets in {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareJsonDownloadMultiSelection'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/commitId'
+      - name: 'body'
+        description: 'The elements to export'
+        in: body
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/FileReference'
+      responses:
+        200:
+          description: 'Returns the token to download the prepared zip-archive. see Download (JSON-LD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/download/json/prepare/{group}/{repo}/{type}/{refId}:
+    get:
+      tags: 
+      - 'Download (JSON-LD)'
+      summary: 'Prepare download of a data set (single data set, with references)'
+      description: 'Collects and compresses data set {type} {refId} and its references from {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareJsonDownloadSingle'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - $ref: '#/parameters/commitId'
+      responses:
+        200:
+          description: 'The token to download the prepared zip-archive. see Download (JSON-LD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {type} {refId} and {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/download/json/{token}:
+    get:
+      tags: 
+      - 'Download (JSON-LD)'
+      summary: 'Download a prepared JSON-LD zip-archive'
+      description: 'Looks up the token in the temporary filestorage and returns the prepared JSON-LD zip-archive'
+      operationId: 'downloadJson'
+      produces:
+      - application/octet-stream
+      parameters:
+      - name: 'token'
+        description: 'The token returned by any of the prepare calls'
+        type: string
+        in: path
+        required: true
+      responses:
+        200:
+          description: 'Returns the prepared zip-archive'
+        404:
+          description: 'No prepared zip-archive found for {token}'
+  /ws/public/download/ilcd/prepare/{group}/{repo}:
+    get:
+      tags: 
+      - 'Download (ILCD)'
+      summary: 'Prepare download of a repository'
+      description: 'Collects and compresses data sets in {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareIlcdDownloadMultiPath'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/commitId'
+      - name: 'path'
+        description: 'A category path to filter the data sets to export'
+        in: query
+        type: string
+      responses:
+        200:
+          description: 'Returns the token to download the prepared zip-archive. see Download (ILCD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+    post:
+      tags: 
+      - 'Download (ILCD)'
+      summary: 'Prepare download of a repository (direct selection with category children)'
+      description: 'Collects and compresses data sets in {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareIlcdDownloadMultiCategories'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/commitId'
+      - name: 'body'
+        description: 'The elements to export, if this element is a category, all children will be collected and exported'
+        in: body
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Reference'
+      responses:
+        200:
+          description: 'Returns the token to download the prepared zip-archive. see Download (ILCD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+    put:
+      tags: 
+      - 'Download (ILCD)'
+      summary: 'Prepare download of a repository (direct selection without category children)'
+      description: 'Collects and compresses data sets in {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareIlcdDownloadMultiSelection'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/commitId'
+      - name: 'body'
+        description: 'The elements to export'
+        in: body
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/FileReference'
+      responses:
+        200:
+          description: 'Returns the token to download the prepared zip-archive. see Download (ILCD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/download/ilcd/prepare/{group}/{repo}/{type}/{refId}:
+    get:
+      tags: 
+      - 'Download (ILCD)'
+      summary: 'Prepare download of a data set (single data set, with references)'
+      description: 'Collects and compresses data set {type} {refId} and its references from {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}'
+      operationId: 'prepareIlcdDownloadSingle'
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - $ref: '#/parameters/commitId'
+      responses:
+        200:
+          description: 'The token to download the prepared zip-archive. see Download (ILCD)'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found or no data found for {type} {refId} and {commitId}'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/public/download/ilcd/{token}:
+    get:
+      tags: 
+      - 'Download (ILCD)'
+      summary: 'Download a prepared ILCD zip-archive'
+      description: 'Looks up the token in the temporary filestorage and returns the prepared ILCD zip-archive'
+      operationId: 'downloadIlcd'
+      produces:
+      - application/octet-stream
+      parameters:
+      - name: 'token'
+        description: 'The token returned by any of the prepare calls'
+        type: string
+        in: path
+        required: true
+      responses:
+        200:
+          description: 'Returns the prepared zip-archive'
+        403:
+          description: 'If a different user tries to download the prepared zip-archive then the one who created it'
+        404:
+          description: 'No prepared zip-archive found for {token}'
+  /ws/user:
+    get:
+      tags: 
+      - 'User'
+      summary: 'Get users'
+      description: 'Loads a list of user descriptors'
+      operationId: 'getUsers'
+      parameters:
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
+      - name: 'module'
+        description: 'Load a module specific list, MESSAGING loads all users that can be messaged, REVIEW loads all users that have the permission to REVIEW in {repositoryPath}'
+        type: string
+        enum: ['MESSAGING', 'REVIEW']
+        in: query
+      - name: 'repositoryPath'
+        description: 'The repository id to filter users from (only applies if module=REVIEW)'
+        type: string
+        in: query
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'A list of user descriptors'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          $ref: '#/responses/UserNotFound'
+  /ws/user/{username}:
+    get:
+      tags: 
+      - 'User'
+      summary: 'Get a user'
+      description: 'Loads {username}'
+      operationId: 'getUser'
+      parameters:
+      - $ref: '#/parameters/username'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'If current user is {username}, returns the complete user info, only username and name otherwise'
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: 'Missing input, invalid username or name or email already in use'    
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          $ref: '#/responses/UserNotFound'
+    put:
+      tags: 
+      - 'User'
+      summary: 'Update a user'
+      description: 'Updates {username}'
+      operationId: 'updateUser'
+      parameters:
+      - $ref: '#/parameters/username'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'After successful update, returns the changed user'
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: 'Missing input or email already in use'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/UserNotFound'
+  /ws/user/avatar/{username}:
+    get:
+      tags: 
+      - 'User'
+      summary: 'Get a users avatar'
+      description: 'Loads the avatar of {username}'
+      operationId: 'getUserAvatar'
+      parameters:
+      - $ref: '#/parameters/username'
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: 'Returns the avatar for {group} as byte array'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          $ref: '#/responses/UserNotFound'
+    put:
+      tags: 
+      - 'User'
+      summary: 'Set user avatar'
+      description: 'Sets the avatar of {username}'
+      operationId: 'setUserAvatar'
+      parameters:
+      - $ref: '#/parameters/username'
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: 'After successful update, returns the changed avatar'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/UserNotFound'
+  /ws/user/setpassword/{username}:
+    put:
+      tags: 
+      - 'User'
+      summary: 'Set password'
+      description: 'Sets a new password for {username}'
+      operationId: 'setPassword'
+      parameters:
+      - $ref: '#/parameters/username'
+      - name: 'body'
+        description: 'The repository id to filter users from (only applies if module=REVIEW)'
+        in: body
+        schema:
+          $ref: '#/definitions/Password'
+      consumes:
+      - application/json
+      responses:
+        200:
+          description: 'Successfully updated password of {username} to {password}'
+        400:
+          description: 'Passwords did not match or password was not secure (Password must consist of at least 8 characters and must contain at least 1 digit, 2 different lowercase letters and 2 different uppercase letters)'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/UserNotFound'
+  /ws/user/twoFactorAuth/{username}:
+    get:
+      tags: 
+      - 'User'
+      summary: 'Get two factor authentification info'
+      description: 'Loads the two factor authentification info of {username}'
+      operationId: 'getTwoFactorAuthenticationInfo'
+      parameters:
+      - $ref: '#/parameters/username'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the two factor authentification info'
+          schema:
+            $ref: '#/definitions/TwoFactorInfo'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/UserNotFound'
+  /ws/user/twoFactorAuth/{username}/{enable}:
+    put:
+      tags: 
+      - 'User'
+      summary: 'Toggle two factor authentication'
+      description: 'Enables/disables configuration of two factor authentification for {username}'
+      operationId: 'toggleTwoFactorAuthentication'
+      parameters:
+      - $ref: '#/parameters/username'
+      - name: 'enable'
+        description: 'if true, enable two factor authentication, otherwise disable it'
+        type: boolean
+        in: path
+        required: true
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the two factor authentification info if enabled'
+          schema:
+            $ref: '#/definitions/TwoFactorInfo'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/UserNotFound'
+  /ws/usermanager/user/{username}:
+    post:
+      tags: 
+      - 'User'
+      summary: 'Create a new user'
+      description: 'Create a new user {username} with generated password. An email containing the password is sent to the email specified for the new user. For this operation the client needs special permission to manage user'
+      operationId: 'createUser'
+      parameters:
+      - $ref: '#/parameters/username'
+      - name: 'body'
+        description: 'The information of the user to create'
+        in: body
+        schema:
+          $ref: '#/definitions/User'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        201:
+          description: 'User was successfully created'
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        400:
+          description: 'Missing input, invalid username or name or email already in use'    
+    delete:
+      tags: 
+      - 'User'
+      summary: 'Delete a user'
+      description: 'Deletes {username} with generated password. For this operation the client needs special permission to manage user'
+      operationId: 'deleteUser'
+      parameters:
+      - $ref: '#/parameters/username'
+      responses:
+        200:
+          description: 'User was successfully deleted'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          description: '{username} not found'
+  /ws/datamanager/glad/push/{group}/{repo}:
+    post:
+      tags: 
+      - 'GLAD'
+      summary: 'Push repository data sets to GLAD'
+      description: 'Pushes the selected data sets to the preconfigured GLAD node. For this operation the client needs special permission to manage data'
+      operationId: 'pushToGLAD'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'body'
+        description: 'The elements to export, if an element is a category, all children will be collected and exported'
+        in: body
+        schema:
+          $ref: '#/definitions/GLADInput'
+      consumes:
+      - application/json
+      responses:
+        200:
+          description: 'Data sets were successfully pushed to the preconfigured GLAD node'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not a data manager'
+        404:
+          $ref: '#/responses/RepoNotFound'
+        503:
+          description: 'Invalid GLAD node configuration, contact data manager or administrator'

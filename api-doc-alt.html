@@ -199,12 +199,32 @@ font-style: italic;
   <li><a href="#commit"><code><span class="http-method">post</span> /ws/commit/{group}/{repo}</code></a></li>
   <li><a href="#requestCommit"><code><span class="http-method">get</span> /ws/commit/request/{group}/{repo}</code></a></li>
   </ul>
+  <h4><a href="#DownloadILCD">DownloadILCD</a></h4>
+  <ul>
+  <li><a href="#downloadIlcd"><code><span class="http-method">get</span> /ws/public/download/ilcd/{token}</code></a></li>
+  <li><a href="#prepareIlcdDownloadMultiCategories"><code><span class="http-method">post</span> /ws/public/download/ilcd/prepare/{group}/{repo}</code></a></li>
+  <li><a href="#prepareIlcdDownloadMultiPath"><code><span class="http-method">get</span> /ws/public/download/ilcd/prepare/{group}/{repo}</code></a></li>
+  <li><a href="#prepareIlcdDownloadMultiSelection"><code><span class="http-method">put</span> /ws/public/download/ilcd/prepare/{group}/{repo}</code></a></li>
+  <li><a href="#prepareIlcdDownloadSingle"><code><span class="http-method">get</span> /ws/public/download/ilcd/prepare/{group}/{repo}/{type}/{refId}</code></a></li>
+  </ul>
+  <h4><a href="#DownloadJSONLD">DownloadJSONLD</a></h4>
+  <ul>
+  <li><a href="#downloadJson"><code><span class="http-method">get</span> /ws/public/download/json/{token}</code></a></li>
+  <li><a href="#prepareJsonDownloadMultiCategories"><code><span class="http-method">post</span> /ws/public/download/json/prepare/{group}/{repo}</code></a></li>
+  <li><a href="#prepareJsonDownloadMultiPath"><code><span class="http-method">get</span> /ws/public/download/json/prepare/{group}/{repo}</code></a></li>
+  <li><a href="#prepareJsonDownloadMultiSelection"><code><span class="http-method">put</span> /ws/public/download/json/prepare/{group}/{repo}</code></a></li>
+  <li><a href="#prepareJsonDownloadSingle"><code><span class="http-method">get</span> /ws/public/download/json/prepare/{group}/{repo}/{type}/{refId}</code></a></li>
+  </ul>
   <h4><a href="#Fetch">Fetch</a></h4>
   <ul>
   <li><a href="#fetch"><code><span class="http-method">post</span> /ws/public/fetch/{group}/{repo}</code></a></li>
   <li><a href="#fetchCommitReferences"><code><span class="http-method">get</span> /ws/public/fetch/references/{group}/{repo}/{commitId}</code></a></li>
   <li><a href="#fetchDataSet"><code><span class="http-method">get</span> /ws/public/fetch/data/{group}/{repo}/{type}/{refId}</code></a></li>
   <li><a href="#requestFetch"><code><span class="http-method">get</span> /ws/public/fetch/request/{group}/{repo}</code></a></li>
+  </ul>
+  <h4><a href="#GLAD">GLAD</a></h4>
+  <ul>
+  <li><a href="#pushToGLAD"><code><span class="http-method">post</span> /ws/datamanager/glad/push/{group}/{repo}</code></a></li>
   </ul>
   <h4><a href="#Group">Group</a></h4>
   <ul>
@@ -250,7 +270,7 @@ font-style: italic;
   <li><a href="#cloneRepository"><code><span class="http-method">post</span> /ws/repository/clone/{group}/{repo}/{commitId}/{newGroup}/{newRepo}</code></a></li>
   <li><a href="#createRepository"><code><span class="http-method">post</span> /ws/repository/{group}/{repo}</code></a></li>
   <li><a href="#deleteRepository"><code><span class="http-method">delete</span> /ws/repository/{group}/{repo}</code></a></li>
-  <li><a href="#exportRepsitory"><code><span class="http-method">get</span> /ws/repository/export/{group}/{repo}</code></a></li>
+  <li><a href="#exportRepository"><code><span class="http-method">get</span> /ws/repository/export/{group}/{repo}</code></a></li>
   <li><a href="#getPublicRepository"><code><span class="http-method">get</span> /ws/public/repository/{group}/{repo}</code></a></li>
   <li><a href="#getPublicRepositoryAvatar"><code><span class="http-method">get</span> /ws/public/repository/avatar/{group}/{repo}</code></a></li>
   <li><a href="#getRepositories"><code><span class="http-method">get</span> /ws/repository</code></a></li>
@@ -258,16 +278,34 @@ font-style: italic;
   <li><a href="#getRepositoryAvatar"><code><span class="http-method">get</span> /ws/repository/avatar/{group}/{repo}</code></a></li>
   <li><a href="#getRepositoryFile"><code><span class="http-method">get</span> /ws/public/repository/file/{group}/{repo}/{type}/{refId}/{filename}</code></a></li>
   <li><a href="#getRepositoryMetaInfo"><code><span class="http-method">get</span> /ws/repository/meta/{group}/{repo}</code></a></li>
-  <li><a href="#importRepsitory"><code><span class="http-method">post</span> /ws/repository/import/{group}/{repo}</code></a></li>
+  <li><a href="#importRepository"><code><span class="http-method">post</span> /ws/repository/import/{group}/{repo}</code></a></li>
   <li><a href="#moveRepository"><code><span class="http-method">post</span> /ws/repository/move/{group}/{repo}/{newGroup}/{newRepo}</code></a></li>
   <li><a href="#setRepositoryAvatar"><code><span class="http-method">put</span> /ws/repository/avatar/{group}/{repo}</code></a></li>
   <li><a href="#setRepositorySetting"><code><span class="http-method">put</span> /ws/repository/settings/{group}/{repo}/{setting}/{value}</code></a></li>
+  </ul>
+  <h4><a href="#Search">Search</a></h4>
+  <ul>
+  <li><a href="#searchDatasets"><code><span class="http-method">get</span> /ws/public/search</code></a></li>
+  <li><a href="#searchFlowLinks"><code><span class="http-method">get</span> /ws/public/search/flowLinks/{flowRefId}</code></a></li>
   </ul>
   <h4><a href="#Session">Session</a></h4>
   <ul>
   <li><a href="#getCurrentUser"><code><span class="http-method">get</span> /ws/public</code></a></li>
   <li><a href="#login"><code><span class="http-method">post</span> /ws/public/login</code></a></li>
   <li><a href="#logout"><code><span class="http-method">post</span> /ws/public/logout</code></a></li>
+  </ul>
+  <h4><a href="#User">User</a></h4>
+  <ul>
+  <li><a href="#createUser"><code><span class="http-method">post</span> /ws/usermanager/user/{username}</code></a></li>
+  <li><a href="#deleteUser"><code><span class="http-method">delete</span> /ws/usermanager/user/{username}</code></a></li>
+  <li><a href="#getTwoFactorAuthenticationInfo"><code><span class="http-method">get</span> /ws/user/twoFactorAuth/{username}</code></a></li>
+  <li><a href="#getUser"><code><span class="http-method">get</span> /ws/user/{username}</code></a></li>
+  <li><a href="#getUserAvatar"><code><span class="http-method">get</span> /ws/user/avatar/{username}</code></a></li>
+  <li><a href="#getUsers"><code><span class="http-method">get</span> /ws/user</code></a></li>
+  <li><a href="#setPassword"><code><span class="http-method">put</span> /ws/user/setpassword/{username}</code></a></li>
+  <li><a href="#setUserAvatar"><code><span class="http-method">put</span> /ws/user/avatar/{username}</code></a></li>
+  <li><a href="#toggleTwoFactorAuthentication"><code><span class="http-method">put</span> /ws/user/twoFactorAuth/{username}/{enable}</code></a></li>
+  <li><a href="#updateUser"><code><span class="http-method">put</span> /ws/user/{username}</code></a></li>
   </ul>
 
   <h1><a name="Commit">Commit</a></h1>
@@ -276,7 +314,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/commit/{group}/{repo}</code></pre></div>
     <div class="method-summary">Commit data sets (<span class="nickname">commit</span>)</div>
-    <div class="method-notes">Commits data sets to repository {group}/{repo}. For this operation the client needs permission to WRITE on {group}/{repo}</div>
+    <div class="method-notes">Commits data sets to {group}/{repo}. For this operation the client needs permission to WRITE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -323,22 +361,22 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
-    Returns the new commit id if the data sets were successfully committed to repository {group}/{repo}
+    Returns the new commit id if the data sets were successfully committed to {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    Out of sync, if there were other commits before the current commit, but after the commit with the specified {lastCommitId}
+    Out of sync, if there were other commits before the current commit, but after {lastCommitId}
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -347,7 +385,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/commit/request/{group}/{repo}</code></pre></div>
     <div class="method-summary">Request to commit data sets (<span class="nickname">requestCommit</span>)</div>
-    <div class="method-notes">Checks if the clients last commit id is actually the last commit to the repository {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs permission to WRITE on {group}/{repo}</div>
+    <div class="method-notes">Checks if the clients last commit id is actually the last commit to {group}/{repo}, this check is performed during a commit as well; this method is to run the check without streaming the data. For this operation the client needs permission to WRITE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -370,16 +408,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    User is in sync with repository {group}/{repo} and is allowed to commit data sets
+    User is in sync with {group}/{repo} and is allowed to commit data sets
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -389,13 +427,560 @@ font-style: italic;
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
+  <h1><a name="DownloadILCD">DownloadILCD</a></h1>
+  <div class="method"><a name="downloadIlcd"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/download/ilcd/{token}</code></pre></div>
+    <div class="method-summary">Download a prepared ILCD zip-archive (<span class="nickname">downloadIlcd</span>)</div>
+    <div class="method-notes">Looks up the token in the temporary filestorage and returns the prepared ILCD zip-archive</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The token returned by any of the prepare calls </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/octet-stream</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the prepared zip-archive
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    If a different user tries to download the prepared zip-archive then the one who created it
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    No prepared zip-archive found for {token}
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareIlcdDownloadMultiCategories"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/public/download/ilcd/prepare/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Prepare download of a repository (direct selection with category children) (<span class="nickname">prepareIlcdDownloadMultiCategories</span>)</div>
+    <div class="method-notes">Collects and compresses data sets in {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Reference">Reference</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The elements to export, if this element is a category, all children will be collected and exported </div>
+
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the token to download the prepared zip-archive. see Download (ILCD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareIlcdDownloadMultiPath"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/download/ilcd/prepare/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Prepare download of a repository (<span class="nickname">prepareIlcdDownloadMultiPath</span>)</div>
+    <div class="method-notes">Collects and compresses data sets in {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div><div class="param">path (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; A category path to filter the data sets to export </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the token to download the prepared zip-archive. see Download (ILCD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareIlcdDownloadMultiSelection"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/public/download/ilcd/prepare/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Prepare download of a repository (direct selection without category children) (<span class="nickname">prepareIlcdDownloadMultiSelection</span>)</div>
+    <div class="method-notes">Collects and compresses data sets in {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#FileReference">FileReference</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The elements to export </div>
+
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the token to download the prepared zip-archive. see Download (ILCD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareIlcdDownloadSingle"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/download/ilcd/prepare/{group}/{repo}/{type}/{refId}</code></pre></div>
+    <div class="method-summary">Prepare download of a data set (single data set, with references) (<span class="nickname">prepareIlcdDownloadSingle</span>)</div>
+    <div class="method-notes">Collects and compresses data set {type} {refId} and its references from {group}/{repo} into a ILCD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div><div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The model type of the data set </div><div class="param">refId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The reference id of the data set </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The token to download the prepared zip-archive. see Download (ILCD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {type} {refId} and {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="DownloadJSONLD">DownloadJSONLD</a></h1>
+  <div class="method"><a name="downloadJson"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/download/json/{token}</code></pre></div>
+    <div class="method-summary">Download a prepared JSON-LD zip-archive (<span class="nickname">downloadJson</span>)</div>
+    <div class="method-notes">Looks up the token in the temporary filestorage and returns the prepared JSON-LD zip-archive</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The token returned by any of the prepare calls </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/octet-stream</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the prepared zip-archive
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    No prepared zip-archive found for {token}
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareJsonDownloadMultiCategories"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/public/download/json/prepare/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Prepare download of a repository (direct selection with category children) (<span class="nickname">prepareJsonDownloadMultiCategories</span>)</div>
+    <div class="method-notes">Collects and compresses data sets in {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Reference">Reference</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The elements to export, if this element is a category, all children will be collected and exported </div>
+
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the token to download the prepared zip-archive. see Download (JSON-LD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareJsonDownloadMultiPath"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/download/json/prepare/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Prepare download of a repository (<span class="nickname">prepareJsonDownloadMultiPath</span>)</div>
+    <div class="method-notes">Collects and compresses data sets in {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div><div class="param">path (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; A category path to filter the data sets to export </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the token to download the prepared zip-archive. see Download (JSON-LD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareJsonDownloadMultiSelection"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/public/download/json/prepare/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Prepare download of a repository (direct selection without category children) (<span class="nickname">prepareJsonDownloadMultiSelection</span>)</div>
+    <div class="method-notes">Collects and compresses data sets in {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#FileReference">FileReference</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The elements to export </div>
+
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the token to download the prepared zip-archive. see Download (JSON-LD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="prepareJsonDownloadSingle"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/download/json/prepare/{group}/{repo}/{type}/{refId}</code></pre></div>
+    <div class="method-summary">Prepare download of a data set (single data set, with references) (<span class="nickname">prepareJsonDownloadSingle</span>)</div>
+    <div class="method-notes">Collects and compresses data set {type} {refId} and its references from {group}/{repo} into a JSON-LD zip-archive, which can be downloaded by using the returned download token. For this operation the client needs permission to READ in {group}/{repo}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div><div class="param">type (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The model type of the data set </div><div class="param">refId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The reference id of the data set </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>text/plain</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The token to download the prepared zip-archive. see Download (JSON-LD)
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    No permission to READ in {group}/{repo}
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found or no data found for {type} {refId} and {commitId}
+        <a href="#"></a>
+    <h4 class="field-label">406</h4>
+    Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
   <h1><a name="Fetch">Fetch</a></h1>
   <div class="method"><a name="fetch"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/public/fetch/{group}/{repo}</code></pre></div>
     <div class="method-summary">Fetch data sets (<span class="nickname">fetch</span>)</div>
-    <div class="method-notes">Fetches all data sets for repository {group}/{repo} that were added after/until the specified {commitId}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Fetches all data sets for {group}/{repo} that were added after/until {commitId}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -450,10 +1035,10 @@ font-style: italic;
     No data sets to fetch
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -465,7 +1050,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/fetch/references/{group}/{repo}/{commitId}</code></pre></div>
     <div class="method-summary">List all references for a commit (<span class="nickname">fetchCommitReferences</span>)</div>
-    <div class="method-notes">Loads data set descriptors of all data sets that were part of the commit with id {commitId}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads data set descriptors of all data sets that were part of {commitId}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -504,13 +1089,13 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns all data set descriptors for data sets commited to the {group}/{repo} in commit {commitId}
+    Returns all data set descriptors for data sets commited to {group}/{repo} in {commitId}
         
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found or no commit with id {commitId} found
+    {group}/{repo} not found or no commit with id {commitId} found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -522,7 +1107,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/fetch/data/{group}/{repo}/{type}/{refId}</code></pre></div>
     <div class="method-summary">Fetch a single data set (<span class="nickname">fetchDataSet</span>)</div>
-    <div class="method-notes">For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -561,13 +1146,13 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the newest data set of type {type} with reference id {refId} within repository {group}/{repo} until the specified {commitId}. See JSON-LD definition for data set structure
+    Returns the newest data set of {type} with {refId} within {group}/{repo} until {commitId}. See JSON-LD definition for data set structure
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found or no data set with given type, refId &amp; (optional) commit id found in it
+    {group}/{repo} not found or no data set with given type, refId &amp; (optional) commit id found in it
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -579,7 +1164,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/fetch/request/{group}/{repo}</code></pre></div>
     <div class="method-summary">Request to fetch data sets (<span class="nickname">requestFetch</span>)</div>
-    <div class="method-notes">Loads data set descriptors to be fetched in a subsequent &quot;fetch&quot; invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads data set descriptors to be fetched in a subsequent &quot;fetch&quot; invocation. Clients can use this method to display changes to the user before invoking the actual fetch operation. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -624,19 +1209,76 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns all data set descriptors for data sets commited to the {group}/{repo} since {lastCommitId}
+    Returns all data set descriptors for data sets commited to {group}/{repo} since {lastCommitId}
         <a href="#FetchRequestData">FetchRequestData</a>
     <h4 class="field-label">204</h4>
     No data sets to fetch
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="GLAD">GLAD</a></h1>
+  <div class="method"><a name="pushToGLAD"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/datamanager/glad/push/{group}/{repo}</code></pre></div>
+    <div class="method-summary">Push repository data sets to GLAD (<span class="nickname">pushToGLAD</span>)</div>
+    <div class="method-notes">Pushes the selected data sets to the preconfigured GLAD node. For this operation the client needs special permission to manage data</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">group (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The group of the repository </div><div class="param">repo (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#GLADInput">GLADInput</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The elements to export, if an element is a category, all children will be collected and exported </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Data sets were successfully pushed to the preconfigured GLAD node
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a data manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {group}/{repo} not found
+        <a href="#"></a>
+    <h4 class="field-label">503</h4>
+    Invalid GLAD node configuration, contact data manager or administrator
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -646,7 +1288,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/group/{group}</code></pre></div>
     <div class="method-summary">Create a new group (<span class="nickname">createGroup</span>)</div>
-    <div class="method-notes">Creates a new group with name {name}. For this operation the client needs general permission to create groups</div>
+    <div class="method-notes">Creates a new group with {name}. For this operation the client needs general permission to create groups</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -704,7 +1346,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/group/{group}</code></pre></div>
     <div class="method-summary">Delete a group (<span class="nickname">deleteGroup</span>)</div>
-    <div class="method-notes">Deletes group {group} and all containing repositories. For this operation the client needs permission to DELETE to {group}</div>
+    <div class="method-notes">Deletes {group} and all containing repositories. For this operation the client needs permission to DELETE {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -740,7 +1382,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/group/{group}</code></pre></div>
     <div class="method-summary">Get group settings (<span class="nickname">getGroup</span>)</div>
-    <div class="method-notes">Loads settings and permissions of {group}. For this operation the client needs permission to READ on {group}</div>
+    <div class="method-notes">Loads settings and permissions of {group}. For this operation the client needs permission to READ in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -781,10 +1423,10 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}
+    No permission to READ in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found
+    {group} not found
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -793,7 +1435,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/group/avatar/{group}</code></pre></div>
     <div class="method-summary">Get group avatar (<span class="nickname">getGroupAvatar</span>)</div>
-    <div class="method-notes">Loads the avatar for group {group}. For this operation the client needs permission to READ on {group}</div>
+    <div class="method-notes">Loads the avatar for {group}. For this operation the client needs permission to READ in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -820,16 +1462,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the avatar for group {group} as byte array
+    Returns the avatar for {group} as byte array
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}
+    No permission to READ in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found
+    {group} not found
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -854,7 +1496,7 @@ font-style: italic;
 
       <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filters results that contain the phrase in their name </div><div class="param">onlyIfCanWrite (optional)</div>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; If true only groups the client has permission to WRITE to are  returned default: false </div>
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; If true only groups the client has permission to WRITE to are returned default: false </div>
     </div>  <!-- field-items -->
 
 
@@ -891,7 +1533,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/group/avatar/{group}</code></pre></div>
     <div class="method-summary">Set group avatar (<span class="nickname">setGroupAvatar</span>)</div>
-    <div class="method-notes">Set the avatar for group {group}. For this operation the client needs permission to WRITE on {group}</div>
+    <div class="method-notes">Set the avatar for {group}. For this operation the client needs permission to WRITE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -929,10 +1571,10 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}
+    No permission to WRITE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found
+    {group} not found
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -942,7 +1584,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/category/{group}/{repo}/{refId}</code></pre></div>
     <div class="method-summary">Get commit history for a category (<span class="nickname">getCategoryCommitHistory</span>)</div>
-    <div class="method-notes">Loads the commit history for category {refId} from repository {group}/{repo}</div>
+    <div class="method-notes">Loads the commit history for category {refId} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -993,16 +1635,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The commit history of category {refId} in repository {group}/{repo}
+    The commit history of category {refId} in {group}/{repo}
         
     <h4 class="field-label">204</h4>
     No commits found
         <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} or category {refId} not found
+    {group}/{repo} or category {refId} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1014,7 +1659,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/commit/{group}/{repo}/{commitId}</code></pre></div>
     <div class="method-summary">Get a commit (<span class="nickname">getCommit</span>)</div>
-    <div class="method-notes">Loads the commit {commitId} from repository {group}/{repo}</div>
+    <div class="method-notes">Loads {commitId} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1059,13 +1704,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The commit {commitId} in repository {group}/{repo}
+    Return {commitId} in {group}/{repo}
         <a href="#Commit">Commit</a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} or commit {commitId} not found
+    {group}/{repo} or {commitId} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1077,7 +1725,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/references/{group}/{repo}/{commitId}</code></pre></div>
     <div class="method-summary">Search references of a commit (<span class="nickname">getCommitReferences</span>)</div>
-    <div class="method-notes">Loads the data sets that were commit in commit {commitId} in repository {group}/{repo}, paged and filtered by {filter} and {type}</div>
+    <div class="method-notes">Loads the data sets that were {commitId} in {group}/{repo}, paged and filtered by {filter} and {type}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1128,16 +1776,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The data sets that were committed to repository {group}/{repo} during commit {commitId}
+    The data sets that were committed to {group}/{repo} during {commitId}
         <a href="#FetchRequestDataSearchResult">FetchRequestDataSearchResult</a>
     <h4 class="field-label">204</h4>
     No commits found
         <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1149,7 +1800,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/{group}/{repo}/{type}/{refId}</code></pre></div>
     <div class="method-summary">Get commit history for a data set (<span class="nickname">getDatasetCommitHistory</span>)</div>
-    <div class="method-notes">Loads the commit history for data set {refId} of type {type} from repository {group}/{repo}</div>
+    <div class="method-notes">Loads the commit history for data set {refId} of {type} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1202,16 +1853,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The commit history of data set {refId} in repository {group}/{repo}
+    The commit history of data set {refId} in {group}/{repo}
         
     <h4 class="field-label">204</h4>
     No commits found
         <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} or data set {refId} not found
+    {group}/{repo} or data set {refId} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1223,7 +1877,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/previousCommitId/{group}/{repo}/{type}/{refId}/{commitId}</code></pre></div>
     <div class="method-summary">Get previous commit id (<span class="nickname">getPreviousCommitId</span>)</div>
-    <div class="method-notes">Looks up the id of the commit on repository {group}/{repo}, prior to the commit with id {commitId}</div>
+    <div class="method-notes">Looks up the id of the commit on {group}/{repo}, prior to {commitId}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1260,11 +1914,14 @@ font-style: italic;
     <h4 class="field-label">200</h4>
     The id of the preceeding commit
         <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} or commit {commitId} not found or {commitId} was the first commit (no predecssor found)
+    {group}/{repo} or {commitId} not found or {commitId} was the first commit (no predecssor found)
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1276,7 +1933,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get commit history for a repository (<span class="nickname">getRepositoryCommitHistory</span>)</div>
-    <div class="method-notes">Loads the commit history for repository {group}/{repo}</div>
+    <div class="method-notes">Loads the commit history for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1331,16 +1988,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The commit history of repository {group}/{repo}
+    The commit history of {group}/{repo}
         
     <h4 class="field-label">204</h4>
     No commits found
         <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} or commit {lastCommitId} not found
+    {group}/{repo} or commit {lastCommitId} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1352,7 +2012,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/history/search/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get paginated and filtered commit history (<span class="nickname">searchCommitHistory</span>)</div>
-    <div class="method-notes">Loads the commit history for repository {group}/{repo}, filtered by {filter} and paged</div>
+    <div class="method-notes">Loads the commit history for {group}/{repo}, filtered by {filter} and paged. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1399,16 +2059,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The commit history for repository {group}/{repo}
+    The commit history for {group}/{repo}
         <a href="#CommitSearchResult">CommitSearchResult</a>
     <h4 class="field-label">204</h4>
     No commits found
         <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1421,7 +2084,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/membership/{group}/team/{teamname}/{role}</code></pre></div>
     <div class="method-summary">Add a team to a group (<span class="nickname">addTeamMembershipForGroup</span>)</div>
-    <div class="method-notes">Add team {teamname} to group {group} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}</div>
+    <div class="method-notes">Add {teamname} to {group} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1446,19 +2109,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
-    Team {teamname} was added to group {group} with role {role}
+    {teamname} was added to {group} with {role}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}
+    No permission to CHANGE_ROLE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found
+    {group} not found
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    Team {teamname} already is a direct member of group {group}
+    {teamname} already is a direct member of {group}
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1467,7 +2130,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/membership/{group}/user/{username}/{role}</code></pre></div>
     <div class="method-summary">Add a user to a group (<span class="nickname">addUserMembershipForGroup</span>)</div>
-    <div class="method-notes">Add user {username} to group {group} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}</div>
+    <div class="method-notes">Add {username} to {group} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1492,19 +2155,19 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
-    User {username} was added to group {group} with role {role}
+    {username} was added to {group} with {role}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}
+    No permission to CHANGE_ROLE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found
+    {group} not found
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    User {username} already is a direct member of {group}
+    {username} already is a direct member of {group}
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1513,7 +2176,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/membership/{group}/team/{teamname}</code></pre></div>
     <div class="method-summary">Delete a team from a group (<span class="nickname">deleteTeamMembershipForGroup</span>)</div>
-    <div class="method-notes">Deletes the team {teamname} from group {group}. For this operation the client needs permission CHANGE_ROLE on {group}</div>
+    <div class="method-notes">Deletes {teamname} from {group}. For this operation the client needs permission to CHANGE_ROLE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1536,16 +2199,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Team {teamname} was deletes from group {group}
+    {teamname} was deletes from {group}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}
+    No permission to CHANGE_ROLE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    group {group} not found or {teamname} is not a member
+    {group} not found or {teamname} is not a member
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1554,7 +2217,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/membership/{group}/user/{username}</code></pre></div>
     <div class="method-summary">Delete a user from a group (<span class="nickname">deleteUserMembershipForGroup</span>)</div>
-    <div class="method-notes">Deletes the user {username} from group {group}. For this operation the client needs permission CHANGE_ROLE on {group}</div>
+    <div class="method-notes">Deletes {username} from {group}. For this operation the client needs permission to CHANGE_ROLE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1577,16 +2240,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    User {username} was deletes from group {group}
+    {username} was deletes from {group}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}
+    No permission to CHANGE_ROLE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found or {username} is not a member
+    {group} not found or {username} is not a member
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1595,7 +2258,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/membership/{group}</code></pre></div>
     <div class="method-summary">Get memberships for a group (<span class="nickname">getGroupMemberships</span>)</div>
-    <div class="method-notes">Get all memberships for group {group}. For this operation the client needs permission to READ on {group}</div>
+    <div class="method-notes">Get all memberships for {group}. For this operation the client needs permission to READ in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1634,16 +2297,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns a list of memberships to group {group}
+    Returns a list of memberships to {group}
         
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}
+    No permission to READ in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found
+    {group} not found
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1652,7 +2315,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/membership/{group}/team/{teamname}/{role}</code></pre></div>
     <div class="method-summary">Update a teams role in a group (<span class="nickname">updateTeamMembershipForGroup</span>)</div>
-    <div class="method-notes">Update the role of team {teamname} in group {group} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}</div>
+    <div class="method-notes">Update the role of {teamname} in {group} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1677,16 +2340,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The role of team {teamname} was changed to {role} in repository {group}
+    The role of {teamname} was changed to {role} in {group}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}
+    No permission to CHANGE_ROLE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found or team {teamname} is not a member
+    {group} not found or {teamname} is not a member
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1695,7 +2358,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/membership/{group}/user/{username}/{role}</code></pre></div>
     <div class="method-summary">Update a users role in a group (<span class="nickname">updateUserMembershipForGroup</span>)</div>
-    <div class="method-notes">Update the role of user {username} in group {group} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}</div>
+    <div class="method-notes">Update the role of {username} in {group} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1720,16 +2383,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The role of user {username} was changed to {role} in group {group}
+    The role of {username} was changed to {role} in {group}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}
+    No permission to CHANGE_ROLE in {group}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Group {group} not found or user {username} is not a member
+    {group} not found or {username} is not a member
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1739,7 +2402,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/membership/{group}/{repo}/team/{teamname}/{role}</code></pre></div>
     <div class="method-summary">Add a team to a repository (<span class="nickname">addTeamMembershipForRepository</span>)</div>
-    <div class="method-notes">Add team {teamname} to repository {group}/{repo} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}</div>
+    <div class="method-notes">Add {teamname} to {group}/{repo} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1766,22 +2429,22 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
-    Team {teamname} was added to repository {group}/{repo} with role {role}
+    {teamname} was added to {group}/{repo} with {role}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}/{repo}
+    No permission to CHANGE_ROLE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    Team {teamname} already is a direct member of repository {group}/{repo}
+    {teamname} already is a direct member of {group}/{repo}
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1790,7 +2453,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/membership/{group}/{repo}/user/{username}/{role}</code></pre></div>
     <div class="method-summary">Add a user to a repository (<span class="nickname">addUserMembershipForRepository</span>)</div>
-    <div class="method-notes">Add user {username} to repository {group}/{repo} with role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}</div>
+    <div class="method-notes">Add {username} to {group}/{repo} with {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1817,22 +2480,22 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
-    User {username} was added to repository {group}/{repo} with role {role}
+    {username} was added to {group}/{repo} with {role}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}/{repo}
+    No permission to CHANGE_ROLE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    User {username} already is a direct member of repository {group}/{repo}
+    {username} already is a direct member of {group}/{repo}
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1841,7 +2504,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/membership/{group}/{repo}/team/{teamname}</code></pre></div>
     <div class="method-summary">Delete a team from a repository (<span class="nickname">deleteTeamMembershipForRepository</span>)</div>
-    <div class="method-notes">Deletes the team {teamname} from repository {group}/{repo}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}</div>
+    <div class="method-notes">Deletes {teamname} from {group}/{repo}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1866,16 +2529,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Team {teamname} was deletes from repository {group}/{repo}
+    {teamname} was deletes from {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}/{repo}
+    No permission to CHANGE_ROLE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found or {teamname} is not a member
+    {group}/{repo} not found or {teamname} is not a member
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1887,7 +2550,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/membership/{group}/{repo}/user/{username}</code></pre></div>
     <div class="method-summary">Delete a user from a repository (<span class="nickname">deleteUserMembershipForRepository</span>)</div>
-    <div class="method-notes">Deletes the user {username} from repository {group}/{repo}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}</div>
+    <div class="method-notes">Deletes {username} from {group}/{repo}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1912,16 +2575,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    User {username} was deletes from repository {group}/{repo}
+    {username} was deletes from {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}/{repo}
+    No permission to CHANGE_ROLE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found or {username} is not a member
+    {group}/{repo} not found or {username} is not a member
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1933,7 +2596,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/membership/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get memberships for a repository (<span class="nickname">getRepositoryMemberships</span>)</div>
-    <div class="method-notes">Get all memberships for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Get all memberships for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -1956,16 +2619,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns a list of memberships to repository {group}/{repo}
+    Returns a list of memberships to {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -1977,7 +2640,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/membership/{group}/{repo}/team/{teamname}/{role}</code></pre></div>
     <div class="method-summary">Update a teams role in a repository (<span class="nickname">updateTeamMembershipForRepository</span>)</div>
-    <div class="method-notes">Update the role of team {teamname} in repository {group}/{repo} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}</div>
+    <div class="method-notes">Update the role of {teamname} in {group}/{repo} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2004,16 +2667,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The role of team {teamname} was changed to {role} in repository {group}/{repo}
+    The role of {teamname} was changed to {role} in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}/{repo}
+    No permission to CHANGE_ROLE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found or team {teamname} is not a member
+    {group}/{repo} not found or {teamname} is not a member
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2025,7 +2688,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/membership/{group}/{repo}/user/{username}/{role}</code></pre></div>
     <div class="method-summary">Update a users role in a repository (<span class="nickname">updateUserMembershipForRepository</span>)</div>
-    <div class="method-notes">Update the role of user {username} in repository {group}/{repo} to role {role}. For this operation the client needs permission CHANGE_ROLE on {group}/{repo}</div>
+    <div class="method-notes">Update the role of {username} in {group}/{repo} to {role}. For this operation the client needs permission to CHANGE_ROLE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2052,16 +2715,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The role of user {username} was changed to {role} in repository {group}/{repo}
+    The role of {username} was changed to {role} in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to CHANGE_ROLE on {group}/{repo}
+    No permission to CHANGE_ROLE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found or user {username} is not a member
+    {group}/{repo} not found or {username} is not a member
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2074,7 +2737,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/repository/clone/{group}/{repo}/{commitId}/{newGroup}/{newRepo}</code></pre></div>
     <div class="method-summary">Clone an existing repository (<span class="nickname">cloneRepository</span>)</div>
-    <div class="method-notes">Clone an existing repository to {newGroup}. For this operation the client needs permission to WRITE on {newGroup} and permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Clone an existing repository to {newGroup}. For this operation the client needs permission to WRITE in {newGroup} and permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2084,7 +2747,7 @@ font-style: italic;
 
       <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div><div class="param">commitId (required)</div>
 
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; If specified only data until commit {commitId} are cloned </div><div class="param">newGroup (required)</div>
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; If specified only data until {commitId} are cloned </div><div class="param">newGroup (required)</div>
 
       <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the group to move the repository to (if it equals the existing group, the repository is renamed </div><div class="param">newRepo (required)</div>
 
@@ -2118,13 +2781,13 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    A repository {newGroup}/{newRepo} already exists
+    {newGroup}/{newRepo} already exists
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -2189,13 +2852,13 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}
+    No permission to WRITE in {group}
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    A repository with the name {repo} already exists in {group}
+    {repo} already exists in {group}
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -2204,7 +2867,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/repository/{group}/{repo}</code></pre></div>
     <div class="method-summary">Delete a repository (<span class="nickname">deleteRepository</span>)</div>
-    <div class="method-notes">Deletes repository {group}/{repo}. For this operation the client needs permission to DELETE to {group}/{repo}</div>
+    <div class="method-notes">Deletes {group}/{repo}. For this operation the client needs permission to DELETE {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2240,12 +2903,12 @@ font-style: italic;
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="exportRepsitory"/>
+  <div class="method"><a name="exportRepository"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/repository/export/{group}/{repo}</code></pre></div>
-    <div class="method-summary">Export a repository (migrate) (<span class="nickname">exportRepsitory</span>)</div>
-    <div class="method-notes">Exports the repository for migration to another collaboration server (only data and repo info is exported, comments and membership information are dropped). For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-summary">Export a repository (migrate) (<span class="nickname">exportRepository</span>)</div>
+    <div class="method-notes">Exports {group}/{repo} for migration to another collaboration server (only data and repo info is exported, comments and membership information are dropped). For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2280,10 +2943,10 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2295,7 +2958,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/repository/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get public repository settings (<span class="nickname">getPublicRepository</span>)</div>
-    <div class="method-notes">Loads settings of the specified repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads settings of {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2342,13 +3005,13 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the settings for repository {group}/{repo}
+    Returns the settings for {group}/{repo}
         <a href="#RepositoryDescriptor">RepositoryDescriptor</a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2360,7 +3023,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/repository/avatar/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get repository avatar (<span class="nickname">getPublicRepositoryAvatar</span>)</div>
-    <div class="method-notes">Loads the avatar for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads the avatar for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2389,13 +3052,13 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the avatar for repository {group}/{repo} as byte array
+    Returns the avatar for {group}/{repo} as byte array
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2462,7 +3125,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/repository/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get repository settings (<span class="nickname">getRepository</span>)</div>
-    <div class="method-notes">Loads settings and permissions of the specified repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads settings and permissions of {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2499,16 +3162,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the settings and permissions for repository {group}/{repo}
+    Returns the settings and permissions for {group}/{repo}
         <a href="#Repository">Repository</a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2520,7 +3183,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/repository/avatar/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get repository avatar (<span class="nickname">getRepositoryAvatar</span>)</div>
-    <div class="method-notes">Loads the avatar for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads the avatar for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2549,16 +3212,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the avatar for repository {group}/{repo} as byte array
+    Returns the avatar for {group}/{repo} as byte array
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2570,7 +3233,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/repository/file/{group}/{repo}/{type}/{refId}/{filename}</code></pre></div>
     <div class="method-summary">Get repository file (<span class="nickname">getRepositoryFile</span>)</div>
-    <div class="method-notes">Loads the file {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads {filename} of data set {type}/{refId} from {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2611,13 +3274,13 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the file {filename} from data set {type}/{refId} for {commitId} in repository {group}/{repo} as byte array
+    Returns {filename} from data set {type}/{refId} for {commitId} in {group}/{repo} as byte array
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo}, data set {type}/{refId} commit {commitId} or file {filename} not found
+    {group}/{repo}, data set {type}/{refId}, {commitId} or {filename} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2629,7 +3292,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/repository/meta/{group}/{repo}</code></pre></div>
     <div class="method-summary">Get repository meta information (<span class="nickname">getRepositoryMetaInfo</span>)</div>
-    <div class="method-notes">Loads meta information for repository {group}/{repo}. For this operation the client needs permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Loads meta information for {group}/{repo}. For this operation the client needs permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2674,22 +3337,22 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to READ on {group}/{repo}
+    No permission to READ in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="importRepsitory"/>
+  <div class="method"><a name="importRepository"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/repository/import/{group}/{repo}</code></pre></div>
-    <div class="method-summary">Import data into an empty repository (<span class="nickname">importRepsitory</span>)</div>
-    <div class="method-notes">Imports either an exported repository from another collaboration server or a JSON-LD zip file exported from openLCA. If the repository is not empty, existing data will be overwritten. For this operation the client needs permission to WRITE on {group}/{repo}</div>
+    <div class="method-summary">Import data into an empty repository (<span class="nickname">importRepository</span>)</div>
+    <div class="method-notes">Imports either an exported repository from another collaboration server or a JSON-LD zip file exported from openLCA. If {group}/{repo} is not empty, existing data will be overwritten. For this operation the client needs permission to WRITE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2740,7 +3403,7 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2752,7 +3415,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/repository/move/{group}/{repo}/{newGroup}/{newRepo}</code></pre></div>
     <div class="method-summary">Move an existing repository (<span class="nickname">moveRepository</span>)</div>
-    <div class="method-notes">Move repository {group}/{repo} to {newGroup}/{newRepo} or rename it within the same group if {group}={newGroup}. For this operation the client needs permission to WRITE on {newGroup} and permission to READ on {group}/{repo}</div>
+    <div class="method-notes">Move {group}/{repo} to {newGroup}/{newRepo} or rename it within the same group if {group}={newGroup}. For this operation the client needs permission to WRITE in {newGroup} and permission to READ in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2762,7 +3425,7 @@ font-style: italic;
 
       <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the repository </div><div class="param">newGroup (required)</div>
 
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the group to move the repository to (if it equals the existing group, the repository is renamed </div><div class="param">newRepo (required)</div>
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the group to move {group}/{repo} to (if it equals the existing group, the repository is renamed) </div><div class="param">newRepo (required)</div>
 
       <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The new name of the repo </div>
     </div>  <!-- field-items -->
@@ -2785,7 +3448,7 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    The repository was successfully moved/renamed
+    {group}/{repo} was successfully moved/renamed
         <a href="#"></a>
     <h4 class="field-label">400</h4>
     {newGroup} does not exist
@@ -2794,13 +3457,13 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
     <h4 class="field-label">409</h4>
-    A repository {newGroup}/{newRepo} already exists
+    {newGroup}/{newRepo} already exists
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -2809,7 +3472,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/repository/avatar/{group}/{repo}</code></pre></div>
     <div class="method-summary">Set repository avatar (<span class="nickname">setRepositoryAvatar</span>)</div>
-    <div class="method-notes">Set the avatar for repository {group}/{repo}. For this operation the client needs permission to WRITE on {group}/{repo}</div>
+    <div class="method-notes">Set the avatar for {group}/{repo}. For this operation the client needs permission to WRITE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2843,16 +3506,16 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the avatar for repository {group}/{repo} as byte array
+    Returns the avatar for {group}/{repo} as byte array
         <a href="#"></a>
     <h4 class="field-label">401</h4>
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">404</h4>
-    Repository {group}/{repo} not found
+    {group}/{repo} not found
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
@@ -2864,7 +3527,7 @@ font-style: italic;
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/repository/settings/{group}/{repo}/{setting}/{value}</code></pre></div>
     <div class="method-summary">Change a setting of the repository (<span class="nickname">setRepositorySetting</span>)</div>
-    <div class="method-notes">Change the value of {setting} to {value}. For this operation the client needs permission to WRITE on {newGroup}/{newRepo}</div>
+    <div class="method-notes">Change the value of {setting} to {value}. For this operation the client needs permission to WRITE in {group}/{repo}</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
@@ -2897,11 +3560,142 @@ font-style: italic;
     Not authenticated
         <a href="#"></a>
     <h4 class="field-label">403</h4>
-    No permission to WRITE on {group}/{repo}
+    No permission to WRITE in {group}/{repo}
         <a href="#"></a>
     <h4 class="field-label">406</h4>
     Repository json schema version is not supported
         <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Search">Search</a></h1>
+  <div class="method"><a name="searchDatasets"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/search</code></pre></div>
+    <div class="method-summary">Search data sets (<span class="nickname">searchDatasets</span>)</div>
+    <div class="method-notes">Searches for data sets across the collaboration server</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">query (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter results by text </div><div class="param">group (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by group name (exact matches) </div><div class="param">repositoryId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by repositoryId (group/repo) (exact matches) </div><div class="param">type (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by model type (exact matches) </div><div class="param">categoryPaths (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by category path (exact matches, only applies if type is set) </div><div class="param">flowType (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by flow type (exact matches, only applies if type=FLOW) </div><div class="param">processType (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by process type (exact matches, only applies if type=PROCESS) </div><div class="param">modellingApproach (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by modellingApproach (exact matches, only applies if type=PROCESS) </div><div class="param">validFromYear (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by validFromYear (exact matches, only applies if type=PROCESS) format: int64</div><div class="param">validUntilYear (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by validUntilYear (exact matches, only applies if type=PROCESS) format: int64</div><div class="param">location (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by location (exact matches, only applies if type=PROCESS) </div><div class="param">contact (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by contact (exact matches, only applies if type=PROCESS) </div><div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; page value for pagination, if the value is 0, no paging is applied and all values will be returned default: 1 format: int32</div><div class="param">pageSize (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Defines the page size for pagination if page is not 0 default: 10 format: int32</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#IndexEntrySearchResult">IndexEntrySearchResult</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ "", "" ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns all data sets that were found for the given criteria, flow data sets will be returned as FlowIndexEntry, process data sets will be returned as ProcessIndexEntry, other data sets will be returned as (default) IndexEntry
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="searchFlowLinks"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/public/search/flowLinks/{flowRefId}</code></pre></div>
+    <div class="method-summary">Search flow links (<span class="nickname">searchFlowLinks</span>)</div>
+    <div class="method-notes">Searches for data sets that either produce, emit or consume {flowRefId}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">flowRefId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The ref id of the flow to search links for </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">commitId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The commit id for the data set (or latest before) </div><div class="param">direction (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by flow direction </div><div class="param">repositoryId (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter by repository id (group/repo) </div><div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; page value for pagination, if the value is 0, no paging is applied and all values will be returned default: 1 format: int32</div><div class="param">pageSize (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Defines the page size for pagination if page is not 0 default: 10 format: int32</div><div class="param">filter (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filters results that contain the phrase in their name </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#IndexEntrySearchResult">IndexEntrySearchResult</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ "", "" ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns all data sets that meet {refId} and optional filters
+        
   </div> <!-- method -->
   <hr/>
   <h1><a name="Session">Session</a></h1>
@@ -3021,6 +3815,545 @@ font-style: italic;
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
+  <h1><a name="User">User</a></h1>
+  <div class="method"><a name="createUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /ws/usermanager/user/{username}</code></pre></div>
+    <div class="method-summary">Create a new user (<span class="nickname">createUser</span>)</div>
+    <div class="method-notes">Create a new user {username} with generated password. An email containing the password is sent to the email specified for the new user. For this operation the client needs special permission to manage user</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#User">User</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The information of the user to create </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#User">User</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    User was successfully created
+        <a href="#User">User</a>
+    <h4 class="field-label">400</h4>
+    Missing input, invalid username or name or email already in use
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /ws/usermanager/user/{username}</code></pre></div>
+    <div class="method-summary">Delete a user (<span class="nickname">deleteUser</span>)</div>
+    <div class="method-notes">Deletes {username} with generated password. For this operation the client needs special permission to manage user</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User was successfully deleted
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getTwoFactorAuthenticationInfo"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/user/twoFactorAuth/{username}</code></pre></div>
+    <div class="method-summary">Get two factor authentification info (<span class="nickname">getTwoFactorAuthenticationInfo</span>)</div>
+    <div class="method-notes">Loads the two factor authentification info of {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#TwoFactorInfo">TwoFactorInfo</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "url" : "otpauth://totp/openLCA%20Data%20Server:johndoe?secret=6HWCC6HXXN563FXX&issuer=openLCA+Data+Server",
+  "key" : "6HWCC6HXXN563FXX",
+  "enabled" : false
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the two factor authentification info
+        <a href="#TwoFactorInfo">TwoFactorInfo</a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/user/{username}</code></pre></div>
+    <div class="method-summary">Get a user (<span class="nickname">getUser</span>)</div>
+    <div class="method-notes">Loads {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#User">User</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    If current user is {username}, returns the complete user info, only username and name otherwise
+        <a href="#User">User</a>
+    <h4 class="field-label">400</h4>
+    Missing input, invalid username or name or email already in use
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUserAvatar"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/user/avatar/{username}</code></pre></div>
+    <div class="method-summary">Get a users avatar (<span class="nickname">getUserAvatar</span>)</div>
+    <div class="method-notes">Loads the avatar of {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/octet-stream</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the avatar for {group} as byte array
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUsers"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /ws/user</code></pre></div>
+    <div class="method-summary">Get users (<span class="nickname">getUsers</span>)</div>
+    <div class="method-notes">Loads a list of user descriptors</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">page (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; page value for pagination, if the value is 0, no paging is applied and all values will be returned default: 1 format: int32</div><div class="param">pageSize (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Defines the page size for pagination if page is not 0 default: 10 format: int32</div><div class="param">filter (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filters results that contain the phrase in their name </div><div class="param">module (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Load a module specific list, MESSAGING loads all users that can be messaged, REVIEW loads all users that have the permission to REVIEW in {repositoryPath} </div><div class="param">repositoryPath (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The repository id to filter users from (only applies if module=REVIEW) </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#User">User</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ "", "" ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    A list of user descriptors
+        
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setPassword"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/user/setpassword/{username}</code></pre></div>
+    <div class="method-summary">Set password (<span class="nickname">setPassword</span>)</div>
+    <div class="method-notes">Sets a new password for {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Password">Password</a> (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; The repository id to filter users from (only applies if module=REVIEW) </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Successfully updated password of {username} to {password}
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Passwords did not match or password was not secure (Password must consist of at least 8 characters and must contain at least 1 digit, 2 different lowercase letters and 2 different uppercase letters)
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setUserAvatar"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/user/avatar/{username}</code></pre></div>
+    <div class="method-summary">Set user avatar (<span class="nickname">setUserAvatar</span>)</div>
+    <div class="method-notes">Sets the avatar of {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>multipart/form-data</code></li>
+    </ul>
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/octet-stream</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    After successful update, returns the changed avatar
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="toggleTwoFactorAuthentication"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/user/twoFactorAuth/{username}/{enable}</code></pre></div>
+    <div class="method-summary">Toggle two factor authentication (<span class="nickname">toggleTwoFactorAuthentication</span>)</div>
+    <div class="method-notes">Enables/disables configuration of two factor authentification for {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div><div class="param">enable (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; if true, enable two factor authentication, otherwise disable it </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#TwoFactorInfo">TwoFactorInfo</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "url" : "otpauth://totp/openLCA%20Data%20Server:johndoe?secret=6HWCC6HXXN563FXX&issuer=openLCA+Data+Server",
+  "key" : "6HWCC6HXXN563FXX",
+  "enabled" : false
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the two factor authentification info if enabled
+        <a href="#TwoFactorInfo">TwoFactorInfo</a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /ws/user/{username}</code></pre></div>
+    <div class="method-summary">Update a user (<span class="nickname">updateUser</span>)</div>
+    <div class="method-notes">Updates {username}</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The username of the user </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#User">User</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    After successful update, returns the changed user
+        <a href="#User">User</a>
+    <h4 class="field-label">400</h4>
+    Missing input or email already in use
+        <a href="#"></a>
+    <h4 class="field-label">401</h4>
+    Not authenticated
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Not a user manager
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    {username} not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
 
   <h2><a name="__Models">Models</a></h2>
   [ Jump to <a href="#__Methods">Methods</a> ]
@@ -3029,6 +4362,7 @@ font-style: italic;
   <ol>
     <li><a href="#AggregationResult"><code>AggregationResult</code> - </a></li>
     <li><a href="#AggregationResultEntry"><code>AggregationResultEntry</code> - </a></li>
+    <li><a href="#AggregationType"><code>AggregationType</code> - </a></li>
     <li><a href="#Commit"><code>Commit</code> - </a></li>
     <li><a href="#CommitSearchResult"><code>CommitSearchResult</code> - </a></li>
     <li><a href="#Credentials"><code>Credentials</code> - </a></li>
@@ -3037,11 +4371,24 @@ font-style: italic;
     <li><a href="#FetchRequestData"><code>FetchRequestData</code> - </a></li>
     <li><a href="#FetchRequestDataSearchResult"><code>FetchRequestDataSearchResult</code> - </a></li>
     <li><a href="#FileReference"><code>FileReference</code> - </a></li>
+    <li><a href="#FlowEntry"><code>FlowEntry</code> - </a></li>
+    <li><a href="#FlowType"><code>FlowType</code> - </a></li>
+    <li><a href="#GLADInput"><code>GLADInput</code> - </a></li>
     <li><a href="#Group"><code>Group</code> - </a></li>
     <li><a href="#GroupDescriptor"><code>GroupDescriptor</code> - </a></li>
     <li><a href="#GroupDescriptorSearchResult"><code>GroupDescriptorSearchResult</code> - </a></li>
+    <li><a href="#IndexAction"><code>IndexAction</code> - </a></li>
+    <li><a href="#IndexEntry"><code>IndexEntry</code> - </a></li>
+    <li><a href="#IndexEntrySearchResult"><code>IndexEntrySearchResult</code> - </a></li>
+    <li><a href="#LicenseType"><code>LicenseType</code> - </a></li>
     <li><a href="#Membership"><code>Membership</code> - </a></li>
     <li><a href="#ModelType"><code>ModelType</code> - </a></li>
+    <li><a href="#ModellingApproach"><code>ModellingApproach</code> - </a></li>
+    <li><a href="#ModellingPrinciple"><code>ModellingPrinciple</code> - </a></li>
+    <li><a href="#Password"><code>Password</code> - </a></li>
+    <li><a href="#ProcessEntry"><code>ProcessEntry</code> - </a></li>
+    <li><a href="#ProcessType"><code>ProcessType</code> - </a></li>
+    <li><a href="#Reference"><code>Reference</code> - </a></li>
     <li><a href="#Repository"><code>Repository</code> - </a></li>
     <li><a href="#RepositoryDescriptor"><code>RepositoryDescriptor</code> - </a></li>
     <li><a href="#RepositoryDescriptorSearchResult"><code>RepositoryDescriptorSearchResult</code> - </a></li>
@@ -3052,6 +4399,7 @@ font-style: italic;
     <li><a href="#SearchResult"><code>SearchResult</code> - </a></li>
     <li><a href="#Team"><code>Team</code> - </a></li>
     <li><a href="#TeamDescriptor"><code>TeamDescriptor</code> - </a></li>
+    <li><a href="#TwoFactorInfo"><code>TwoFactorInfo</code> - </a></li>
     <li><a href="#User"><code>User</code> - </a></li>
     <li><a href="#UserDescriptor"><code>UserDescriptor</code> - </a></li>
     <li><a href="#UserSettings"><code>UserSettings</code> - </a></li>
@@ -3061,9 +4409,9 @@ font-style: italic;
     <h3><a name="AggregationResult"><code>AggregationResult</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of this aggregation result </div>
-<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of aggregation </div>
-<div class="param">totalCount (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount of entries found for this aggregation format: int64</div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of this aggregation result </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of aggregation </div>
+<div class="param">totalCount </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount of entries found for this aggregation format: int64</div>
 <div class="param">entries (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResultEntry">array[AggregationResultEntry]</a></span> A list of entries into which the aggregation splits (each possible result value is a result entry) </div>
     </div>  <!-- field-items -->
   </div>
@@ -3071,20 +4419,26 @@ font-style: italic;
     <h3><a name="AggregationResultEntry"><code>AggregationResultEntry</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">key (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The key of this aggregation result entry </div>
-<div class="param">count (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount of entries found for the given key format: int64</div>
+      <div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The key of this aggregation result entry </div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount of entries found for the given key format: int64</div>
 <div class="param">subEntries (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResultEntry">array[AggregationResultEntry]</a></span> Children elements in case of hierarchical entries </div>
     </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="AggregationType"><code>AggregationType</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="Commit"><code>Commit</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the commit </div>
-<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The message of the commit </div>
-<div class="param">user (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The username of the user that performed the commit </div>
-<div class="param">timestamp (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The time when the commit was performed format: int64</div>
-<div class="param">userDisplayName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The display name of the user that performed the commit or the username if the user does not exist anymore </div>
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the commit </div>
+<div class="param">message </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The message of the commit </div>
+<div class="param">user </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The username of the user that performed the commit </div>
+<div class="param">timestamp </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The time when the commit was performed format: int64</div>
+<div class="param">userDisplayName </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The display name of the user that performed the commit or the username if the user does not exist anymore </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3092,7 +4446,7 @@ font-style: italic;
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">aggregations (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResult">array[AggregationResult]</a></span> The aggregations of the search result </div>
-<div class="param">resultInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
+<div class="param">resultInfo </div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3108,8 +4462,8 @@ font-style: italic;
     <h3><a name="CurrentUser"><code>CurrentUser</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A username, e.g. used for login, etc. </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display name for the user </div>
+      <div class="param">username </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A username, e.g. used for login, etc. </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display name for the user </div>
 <div class="param">noOfTasks (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total number of active tasks format: int32</div>
 <div class="param">noOfRepositories (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Total number of repositories in this users user group format: int32</div>
     </div>  <!-- field-items -->
@@ -3157,7 +4511,7 @@ font-style: italic;
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">aggregations (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResult">array[AggregationResult]</a></span> The aggregations of the search result </div>
-<div class="param">resultInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
+<div class="param">resultInfo </div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3171,10 +4525,57 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="FlowEntry"><code>FlowEntry</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The model type of the data set </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">refId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The reference id of the data set </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the data set </div>
+<div class="param">version (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The version of the data set, containing Major, Minor, Update version (Major.Minor.Update) </div>
+<div class="param">lastChange (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The date of the last change to the data set, specified in milliseconds since 1/1/1970 format: int64</div>
+<div class="param">categoryRefId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The reference id of the category of the data set </div>
+<div class="param">categoryType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> If this data set is of type CATEGORY, the categoryType specified for which type of data set this category is for </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">categories (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The category path as array </div>
+<div class="param">repositoryId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the repository of the entry </div>
+<div class="param">group </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group of the repository the entry </div>
+<div class="param">action </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of change of the entry, &quot;ADD&quot; if the data set was added in this commit, &quot;UPDATE&quot; if the data set existed before and &quot;DELETE&quot; if the data set was deleted in this commit </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ADD</div><div class="param-enum">UPDATE</div><div class="param-enum">DELETE</div>
+<div class="param">commitId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the commit of the entry </div>
+<div class="param">commitMessage (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The message that was specified when the commit was executed </div>
+<div class="param">commitTimestamp (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The time when the commit was executed format: int64</div>
+<div class="param">mostRecent (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Indicates if this is the most recent entry in the index, if false, newer versions of the data set exist </div>
+<div class="param">fullPath (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The full category path including the name of the element at last, concatenated with a slash </div>
+<div class="param">category (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The full category path of the element, concatenated with a slash </div>
+<div class="param">categoryPaths (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The category (path) as all combinations (used to aggregate by results) </div>
+<div class="param">flowType </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of flow </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ELEMENTARY_FLOW</div><div class="param-enum">PRODUCT_FLOW</div><div class="param-enum">WASTE_FLOW</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="FlowType"><code>FlowType</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="GLADInput"><code>GLADInput</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">dataprovider (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the data provider of the selected data sets (will be used in GLAD) </div>
+<div class="param">references (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reference">array[Reference]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="Group"><code>Group</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group </div>
 <div class="param">userCanDelete (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if the current user can delete the group </div>
 <div class="param">userCanWrite (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if the current user has permission to WRITE to the group </div>
 <div class="param">userCanCreate (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if the current user can create repositories within the group </div>
@@ -3185,7 +4586,7 @@ font-style: italic;
     <h3><a name="GroupDescriptor"><code>GroupDescriptor</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group </div>
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3193,15 +4594,65 @@ font-style: italic;
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">aggregations (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResult">array[AggregationResult]</a></span> The aggregations of the search result </div>
-<div class="param">resultInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
+<div class="param">resultInfo </div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
     </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="IndexAction"><code>IndexAction</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="IndexEntry"><code>IndexEntry</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The model type of the data set </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">refId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The reference id of the data set </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the data set </div>
+<div class="param">version (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The version of the data set, containing Major, Minor, Update version (Major.Minor.Update) </div>
+<div class="param">lastChange (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The date of the last change to the data set, specified in milliseconds since 1/1/1970 format: int64</div>
+<div class="param">categoryRefId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The reference id of the category of the data set </div>
+<div class="param">categoryType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> If this data set is of type CATEGORY, the categoryType specified for which type of data set this category is for </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">categories (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The category path as array </div>
+<div class="param">repositoryId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the repository of the entry </div>
+<div class="param">group </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group of the repository the entry </div>
+<div class="param">action </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of change of the entry, &quot;ADD&quot; if the data set was added in this commit, &quot;UPDATE&quot; if the data set existed before and &quot;DELETE&quot; if the data set was deleted in this commit </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ADD</div><div class="param-enum">UPDATE</div><div class="param-enum">DELETE</div>
+<div class="param">commitId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the commit of the entry </div>
+<div class="param">commitMessage (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The message that was specified when the commit was executed </div>
+<div class="param">commitTimestamp (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The time when the commit was executed format: int64</div>
+<div class="param">mostRecent (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Indicates if this is the most recent entry in the index, if false, newer versions of the data set exist </div>
+<div class="param">fullPath (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The full category path including the name of the element at last, concatenated with a slash </div>
+<div class="param">category (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The full category path of the element, concatenated with a slash </div>
+<div class="param">categoryPaths (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The category (path) as all combinations (used to aggregate by results) </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="IndexEntrySearchResult"><code>IndexEntrySearchResult</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">aggregations (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResult">array[AggregationResult]</a></span> The aggregations of the search result </div>
+<div class="param">resultInfo </div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LicenseType"><code>LicenseType</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="Membership"><code>Membership</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">memberOf (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Group or group/repository path the user is member of </div>
-<div class="param">role (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The role of the user in this group or repository </div>
+      <div class="param">memberOf </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Group or group/repository path the user is member of </div>
+<div class="param">role </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The role of the user in this group or repository </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">READER</div><div class="param-enum">CONTRIBUTOR</div><div class="param-enum">REVIEWER</div><div class="param-enum">EDITOR</div><div class="param-enum">OWNER</div>
 <div class="param">user (optional)</div><div class="param-desc"><span class="param-type"><a href="#object">Object</a></span>  </div>
@@ -3215,11 +4666,118 @@ font-style: italic;
           </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="ModellingApproach"><code>ModellingApproach</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ModellingPrinciple"><code>ModellingPrinciple</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Password"><code>Password</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">password </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The new password </div>
+<div class="param">password2 </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The same password, to ensure password was entered correctly </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ProcessEntry"><code>ProcessEntry</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The model type of the data set </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">refId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The reference id of the data set </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the data set </div>
+<div class="param">version (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The version of the data set, containing Major, Minor, Update version (Major.Minor.Update) </div>
+<div class="param">lastChange (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The date of the last change to the data set, specified in milliseconds since 1/1/1970 format: int64</div>
+<div class="param">categoryRefId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The reference id of the category of the data set </div>
+<div class="param">categoryType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> If this data set is of type CATEGORY, the categoryType specified for which type of data set this category is for </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">categories (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The category path as array </div>
+<div class="param">repositoryId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the repository of the entry </div>
+<div class="param">group </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the group of the repository the entry </div>
+<div class="param">action </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of change of the entry, &quot;ADD&quot; if the data set was added in this commit, &quot;UPDATE&quot; if the data set existed before and &quot;DELETE&quot; if the data set was deleted in this commit </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ADD</div><div class="param-enum">UPDATE</div><div class="param-enum">DELETE</div>
+<div class="param">commitId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the commit of the entry </div>
+<div class="param">commitMessage (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The message that was specified when the commit was executed </div>
+<div class="param">commitTimestamp (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The time when the commit was executed format: int64</div>
+<div class="param">mostRecent (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Indicates if this is the most recent entry in the index, if false, newer versions of the data set exist </div>
+<div class="param">fullPath (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The full category path including the name of the element at last, concatenated with a slash </div>
+<div class="param">category (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The full category path of the element, concatenated with a slash </div>
+<div class="param">categoryPaths (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The category (path) as all combinations (used to aggregate by results) </div>
+<div class="param">processType </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of process </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">UNIT</div><div class="param-enum">SYSTEM</div><div class="param-enum">UNKNOWN</div>
+<div class="param">completeness (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A text describing the completeness </div>
+<div class="param">sampleRepresentativeness (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A text describing the representativeness of the samples </div>
+<div class="param">samplingProcedure (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A text describing the sampling procedure </div>
+<div class="param">validFrom (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The start of the validity of the data set in milliseconds since 01/01/1970 (unix-time tims 1000) format: int64</div>
+<div class="param">validUntil (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The end of the validity of the data set in milliseconds  since 01/01/1970 (unix-time tims 1000) format: int64</div>
+<div class="param">validFromYear (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The year of the start of the validity of the data set, will be taken from validFrom if not set format: int32</div>
+<div class="param">validUntilYear (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The year of the end of the validity of the data set, will be taken from validUntil if not set format: int32</div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the location </div>
+<div class="param">locationCode (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The code of the location </div>
+<div class="param">technology (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A description of the technology used in the data set </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A description </div>
+<div class="param">supportedNomenclatures (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The nomenclatures, the data set is compliant to </div>
+        <div class="param-enum-header">Enum:</div>
+        
+<div class="param">representativeness (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A text describing the representativenes </div>
+<div class="param">modellingPrinciple (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ATTRIBUTIONAL</div><div class="param-enum">CONSEQUENTIAL</div><div class="param-enum">UNKNOWN</div>
+<div class="param">modellingApproach (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">PHYSICAL</div><div class="param-enum">ECONOMIC</div><div class="param-enum">CAUSAL</div><div class="param-enum">NONE</div><div class="param-enum">UNKNOWN</div>
+<div class="param">biogenicCarbon (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A text describing the biogenic carbon modelling </div>
+<div class="param">reviewed (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Indicates if the data set was reviewed or not </div>
+<div class="param">reviewer (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the reviewer </div>
+<div class="param">aggregationType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">HORIZONTAL</div><div class="param-enum">VERTICAL</div><div class="param-enum">NONE</div><div class="param-enum">UNKNOWN</div>
+<div class="param">copyrightProtected (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Indicates if the data set is copyright protected or not </div>
+<div class="param">copyrightHolder (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the copyright holder </div>
+<div class="param">licenseType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The type of license </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">FREE</div><div class="param-enum">MIXED</div><div class="param-enum">CHARGED</div><div class="param-enum">UNKNOWN</div>
+<div class="param">license (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A license description </div>
+<div class="param">contact (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the contact person </div>
+<div class="param">inputs (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> A list of flow ids that are an input of the process </div>
+<div class="param">outputs (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> A list of flow ids that are an output of the process </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ProcessType"><code>ProcessType</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Reference"><code>Reference</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The id of the reference </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The model type of the reference </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ACTOR</div><div class="param-enum">CATEGORY</div><div class="param-enum">CURRENCY</div><div class="param-enum">DQ_SYSTEM</div><div class="param-enum">FLOW</div><div class="param-enum">FLOW_PROPERTY</div><div class="param-enum">IMPACT_CATEGORY</div><div class="param-enum">IMPACT_METHOD</div><div class="param-enum">LOCATION</div><div class="param-enum">NW_SET</div><div class="param-enum">PARAMETER</div><div class="param-enum">PROCESS</div><div class="param-enum">PRODUCT_SYSTEM</div><div class="param-enum">PROJECT</div><div class="param-enum">SOURCE</div><div class="param-enum">UNIT</div><div class="param-enum">UNIT_GROUP</div><div class="param-enum">SOCIAL_INDICATOR</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the reference </div>
+<div class="param">commitId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The commit id of the reference </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="Repository"><code>Repository</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">group (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The group of the repository </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the repository </div>
+      <div class="param">group </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The group of the repository </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the repository </div>
 <div class="param">groupIsUserNamespace (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if the group is a user namespace </div>
 <div class="param">settings (optional)</div><div class="param-desc"><span class="param-type"><a href="#RepositorySettings">RepositorySettings</a></span>  </div>
 <div class="param">userCanDelete (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if the current user is allowed to delete the repository </div>
@@ -3235,8 +4793,8 @@ font-style: italic;
     <h3><a name="RepositoryDescriptor"><code>RepositoryDescriptor</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">group (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The group of the repository </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the repository </div>
+      <div class="param">group </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The group of the repository </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the repository </div>
 <div class="param">groupIsUserNamespace (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if the group is a user namespace </div>
 <div class="param">settings (optional)</div><div class="param-desc"><span class="param-type"><a href="#RepositorySettings">RepositorySettings</a></span>  </div>
     </div>  <!-- field-items -->
@@ -3246,14 +4804,14 @@ font-style: italic;
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">aggregations (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResult">array[AggregationResult]</a></span> The aggregations of the search result </div>
-<div class="param">resultInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
+<div class="param">resultInfo </div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="RepositoryMetaInfo"><code>RepositoryMetaInfo</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">schemaVersion (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The JSON-LD schema version of this repository </div>
+      <div class="param">schemaVersion </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The JSON-LD schema version of this repository </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3270,11 +4828,11 @@ font-style: italic;
     <h3><a name="ResultInfo"><code>ResultInfo</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">pageSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The size of each page of results format: int32</div>
-<div class="param">count (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The amount of actual results returned format: int32</div>
-<div class="param">totalCount (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount total results matching the query format: int64</div>
-<div class="param">currentPage (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The current page number format: int32</div>
-<div class="param">pageCount (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The total number of pages format: int32</div>
+      <div class="param">pageSize </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The size of each page of results format: int32</div>
+<div class="param">count </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount of actual results returned format: int64</div>
+<div class="param">totalCount </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The amount total results matching the query format: int64</div>
+<div class="param">currentPage </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The current page number format: int32</div>
+<div class="param">pageCount </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> The total number of pages format: int32</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -3288,15 +4846,15 @@ font-style: italic;
     <div class='model-description'></div>
     <div class="field-items">
       <div class="param">aggregations (optional)</div><div class="param-desc"><span class="param-type"><a href="#AggregationResult">array[AggregationResult]</a></span> The aggregations of the search result </div>
-<div class="param">resultInfo (optional)</div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
+<div class="param">resultInfo </div><div class="param-desc"><span class="param-type"><a href="#ResultInfo">ResultInfo</a></span> Search result specific information </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="Team"><code>Team</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">teamname (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A teamname </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display label for the team </div>
+      <div class="param">teamname </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A teamname </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display label for the team </div>
 <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span> The internal id of the team format: int64</div>
     </div>  <!-- field-items -->
   </div>
@@ -3304,24 +4862,33 @@ font-style: italic;
     <h3><a name="TeamDescriptor"><code>TeamDescriptor</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">teamname (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A teamname </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display label for the team </div>
+      <div class="param">teamname </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A teamname </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display label for the team </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="TwoFactorInfo"><code>TwoFactorInfo</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">url </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The OtpAuthTotpURL for generating a QR code </div>
+<div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The two factor authentification secret </div>
+<div class="param">enabled (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> True if two factor authentication is enabled </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="User"><code>User</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A username, e.g. used for login, etc. </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display name for the user </div>
+      <div class="param">username </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A username, e.g. used for login, etc. </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display name for the user </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="UserDescriptor"><code>UserDescriptor</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A username, e.g. used for login, etc. </div>
-<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display name for the user </div>
+      <div class="param">username </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A username, e.g. used for login, etc. </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> A display name for the user </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
