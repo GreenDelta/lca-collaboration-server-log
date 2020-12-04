@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: 'Webservice documentation for the LCA Collaboration Server'
-  version: '1.1.1'
+  version: 1.3.0
   title: 'LCA Collaboration Server Webservice'
   contact:
     email: 'greve@greendelta.com'
@@ -10,6 +10,9 @@ schemes:
 - https
 - http
 definitions:
+  JobResult:
+    type: string
+    enum: [INVALID, EXPIRED, ERROR, SUCCESS]  
   ModelType:
     type: string
     enum: &MODEL_TYPE
@@ -70,7 +73,15 @@ definitions:
       - 'FREE'
       - 'MIXED'
       - 'CHARGED'
-      - 'UNKNOWN'    
+      - 'UNKNOWN'
+  Role:
+    type: string
+    enum: &ROLES
+      - 'READER'
+      - 'CONTRIBUTOR'
+      - 'REVIEWER'
+      - 'EDITOR'
+      - 'OWNER'
   IndexAction:
     type: string
     enum: &INDEX_ACTION
@@ -109,6 +120,54 @@ definitions:
     required:
       - password
       - password2
+  UrlAndCredentials:
+    type: object
+    required:
+    - url
+    - username
+    - password
+    properties:
+      url:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      token:
+        type: string
+  Email:
+    type: object
+    required:
+    - email
+    properties:
+      email:
+        type: string
+  Value:
+    type: object
+    required:
+    - value
+    properties:
+      value:
+        type: string
+  RegisteringUser:
+    type: object
+    required:
+    - username
+    - name
+    - email
+    - password
+    - password2
+    properties:
+      username:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      password2:
+        type: string
   TwoFactorInfo:
     type: object
     properties:
@@ -215,7 +274,6 @@ definitions:
         items:
           $ref: '#/definitions/AggregationResult'
       resultInfo:
-        description: 'Search result specific information'
         $ref: '#/definitions/ResultInfo'
     required:
       - resultInfo
@@ -247,6 +305,16 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Commit'
+    required:
+      - resultInfo
+  CommentSearchResult:
+    allOf:
+    - $ref: '#/definitions/SearchResult'
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Comment'
     required:
       - resultInfo
   FetchRequestDataSearchResult:
@@ -506,14 +574,6 @@ definitions:
           type: integer
           format: int64
           default: 0
-  Role:
-    type: string
-    enum: &ROLES
-      - 'READER'
-      - 'CONTRIBUTOR'
-      - 'REVIEWER'
-      - 'EDITOR'
-      - 'OWNER'
   Membership:
     type: object
     properties:
@@ -567,6 +627,58 @@ definitions:
       - user
       - timestamp
       - userDisplayName
+  Comment:
+    type: object
+    properties:
+      id:
+        type: number
+      repositoryPath:
+        type: string
+      date:
+        type: number
+      restrictedToRole:
+        type: string
+        enum: *ROLES
+      released:
+        type: boolean
+      approved:
+        type: boolean
+      replyTo:
+        type: number
+      replyCount:
+        type: number
+      field:
+        type: object
+        properties:
+          modelType:
+            type: string
+            enum: *MODEL_TYPE
+          refId:
+            type: string
+          commitId:
+            type: string
+          path:
+            type: string
+      user:
+        $ref: '#/definitions/UserDescriptor'
+  Message:
+    type: object
+    properties:
+      from:
+        $ref: '#/definitions/UserDescriptor'
+      to:
+        $ref: '#/definitions/UserDescriptor'
+      team:
+        $ref: '#/definitions/TeamDescriptor'
+      date:
+        type: number
+      text:
+        type: string
+      read:
+        type: number
+        description: 'The time the message was read'
+      showReadReceipt:
+        type: boolean
   FileReference:
     type: object
     properties:
@@ -655,17 +767,6 @@ definitions:
           description: 'Indicates if the data set was added in the last commit'
           type: boolean
           default: false
-  GLADInput:
-    type: object
-    properties:
-      dataprovider:
-        description: 'The name of the data provider of the selected data sets (will be used in GLAD)'
-        type: string
-        example: 'GreenDelta GmbH'
-      references:
-        type: array
-        items:
-          $ref: '#/definitions/Reference'
   IndexEntry:
     allOf:
     - $ref: '#/definitions/Dataset'
@@ -845,6 +946,74 @@ definitions:
             type: string
       required:
         - processType
+  TaskAssignment:
+    properties:
+      id:
+        type: number
+      startDate:
+        type: number
+      endDate:
+        type: number
+      iteration:
+        type: number
+      canceled:
+        type: boolean
+      assignedTo:
+        $ref: '#/definitions/UserDescriptor'
+      endedBy:
+        $ref: '#/definitions/UserDescriptor'
+  Task:
+    properties:
+      id:
+        type: number
+      name:
+        type: string
+        description: 'The name of the task'
+      type:
+        type: string
+        enum: [REVIEW]
+      repositoryPath:
+        type: string
+      comment:
+        type: string
+      startDate:
+        type: number
+      endDate:
+        type: number
+      state:
+        type: string
+        enum: [CREATED, PROCESSING, VERIFYING, CANCELED, COMPLETED]
+      repositoryLabel:
+        type: string
+      initiator:
+        $ref: '#/definitions/UserDescriptor'
+      assignments:
+        type: array
+        items:
+          $ref: '#/definitions/TaskAssignment'
+  ReviewReference:
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum: *MODEL_TYPE
+      refId:
+        type: string
+      commitId:
+        type: string
+      name:
+        type: string
+      reviewer:
+        $ref: '#/definitions/UserDescriptor'
+  Review:
+    allOf:
+    - $ref: '#/definitions/Task'
+    - properties:
+        references:
+          type: array
+          items:
+            $ref: '#/definitions/ReviewReference'
 parameters:
   group:
     name: 'group'
@@ -914,6 +1083,8 @@ parameters:
     in: query
     type: string
 responses:
+  ServiceNotEnabled:
+    description: 'Service not enabled'
   NotLoggedIn:
     description: 'Not authenticated'
   NoReadPerm:
@@ -924,6 +1095,12 @@ responses:
     description: 'No permission to WRITE in {group}/{repo}'
   NoWritePermGroup:
     description: 'No permission to WRITE in {group}'
+  NoCommentPerm:
+    description: 'No permission to COMMENT in {group}/{repo}'
+  NoSetSettingsPermGroup:
+    description: 'No permission to SET_SETTINGS in {group}'
+  NoSetSettingsPerm:
+    description: 'No permission to SET_SETTINGS in {group}/{repo}'
   NoDeletePerm:
     description: 'No permission to DELETE {group}/{repo}'
   NoChangeRolePerm:
@@ -936,10 +1113,14 @@ responses:
     description: '{group} not found'
   UserNotFound:
     description: '{username} not found'
+  TeamNotFound:
+    description: '{teamname} not found'
   UnsupportedSchema:
     description: 'Repository json schema version is not supported'
   NotUserManager:
     description: 'Not a user manager'
+  NotDataManager:
+    description: 'Not a data manager'
 paths:
   /ws/public:
     get:
@@ -994,6 +1175,73 @@ paths:
           description: 'Logout successful'
         409:
           description: 'Not logged in'
+  "/ws/public/request-password-reset":
+    post:
+      tags:
+      - 'Session'
+      operationId: 'requestPasswordReset'
+      consumes:
+      - application/json
+      parameters:
+      - in: 'body'
+        name: 'email'
+        required: true
+        schema:
+          $ref: "#/definitions/Email"
+      responses:
+        200:
+          description: 'To avoid leaking of registered email addresses, the service returns 200 everytime'
+  /ws/public/register:
+    post:
+      tags:
+      - 'Session'
+      operationId: 'register'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: 'user'
+        required: true
+        schema:
+          $ref: "#/definitions/RegisteringUser"
+      responses:
+        200:
+          description: 'Registration successful'
+        400:
+          description: 'Missing or invalid input'
+        409:
+          description: 'Already authenticated'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  "/ws/public/run-job":
+    post:
+      tags:
+      - 'Session'
+      operationId: 'runJob'
+      consumes:
+      - application/json
+      produces:
+      - text/plain
+      parameters:
+      - in: body
+        name: 'token'
+        required: true
+        schema:
+          type: object
+          required:
+          - token
+          properties:
+            token:
+              type: string
+      responses:
+        200:
+          description: 'Job execution successful'
+          schema:
+            $ref: "#/definitions/JobResult"
+        400:
+          description: 'Invalid token'
   /ws/group:
     get:
       tags:
@@ -1116,6 +1364,42 @@ paths:
           $ref: '#/responses/NoWritePermGroup'
         404:
           $ref: '#/responses/GroupNotFound'
+    parameters:
+    - name: 'group'
+      description: 'The name for the group'
+      in: path
+      type: string
+      required: true
+  /ws/group/settings/{group}/{setting}:
+    put:
+      tags:
+      - 'Group'
+      summary: 'Set group setting'
+      description: 'Set a group setting {setting} for {group}'
+      operationId: 'setGroupSetting'
+      consumes:
+      - application/json
+      responses:
+        200:
+          description: 'Setting succesfully updated'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoSetSettingsPermGroup'
+        404:
+          $ref: '#/responses/GroupNotFound'
+      parameters:
+      - name: 'value'
+        description: 'The value for the setting'
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Value'
+      - name: 'setting'
+        description: 'The name of the setting'
+        in: path
+        type: string
+        required: true
     parameters:
     - name: 'group'
       description: 'The name for the group'
@@ -1517,6 +1801,87 @@ paths:
           $ref: '#/responses/NotLoggedIn'
         403:
           $ref: '#/responses/NoWritePerm'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/repository/import/external/{group}/{repo}:
+    post:
+      tags:
+      - 'Repository'
+      summary: 'Migrate a repository'
+      description: 'Copies a repository from another collaboration server. If {group}/{repo} is not empty, existing data will be overwritten. For this operation the client needs permission to WRITE in {group}/{repo}'
+      operationId: 'importExternalRepository'
+      consumes:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'data'
+        description: 'The url and credentials for accessing the external collaboration server'
+        in: body
+        schema: 
+          $ref: '#/definitions/UrlAndCredentials'
+      responses:
+        200:
+          description: 'The data was successfully imported'
+        400:
+          description: 'Missing inputs or invalid url or credentials or token required'  
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoWritePerm'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/repository/restriction/{group}/{repo}/{library}/{role}:
+    put:
+      tags:
+      - 'Repository'
+      summary: 'Set library restriction'
+      description: 'Set a WRITE restriction for data sets listed in the specified {library} to users with {role}'
+      operationId: 'setRestriction'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'library'
+        required: true
+        description: 'The library to set a restriction for'
+        in: path
+        type: string
+      - name: 'role'
+        required: true
+        description: 'The role to restrict to'
+        in: path
+        type: string
+      responses:
+        200:
+          description: 'Successfully set restriction'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoSetSettingsPerm'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+  /ws/repository/restriction/{group}/{repo}/{library}:
+    delete:
+      tags:
+      - 'Repository'
+      summary: 'Remove library restriction'
+      description: 'Remove a WRITE restriction for data sets listed in the specified {library}'
+      operationId: 'removeRestriction'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'library'
+        required: true
+        description: 'The library to set a restriction for'
+        in: path
+        type: string
+      responses:
+        200:
+          description: 'Successfully removed restriction'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoSetSettingsPerm'
         406:
           $ref: '#/responses/UnsupportedSchema'
   /ws/membership/{group}:
@@ -2232,6 +2597,118 @@ paths:
           description: '{group}/{repo} or {commitId} not found or {commitId} was the first commit (no predecssor found)'
         406:
           $ref: '#/responses/UnsupportedSchema'
+  /ws/public/browse/{group}/{repo}:
+    get:
+      tags:
+      - 'Browse'
+      summary: 'Get category contents'
+      description: 'Collects all contents for a specified category'
+      operationId: 'getCategoryContents'
+      produces:
+      - application/json
+      parameters:
+        - $ref: '#/parameters/group'
+        - $ref: '#/parameters/repo'
+        - $ref: '#/parameters/commitId'
+        - name: 'categoryPath'
+          description: 'The full category path for the current category'
+          in: query
+          type: string
+        - name: 'filter'
+          description: 'Filter results by name'
+          in: query
+          type: string
+        - name: 'showDeleted'
+          description: 'If true also shows deleted data sets'
+          in: query
+          type: boolean
+      responses:
+        200:
+          description: 'Returns category/data set descriptors for browsing view'
+          schema:
+            type: object
+            properties:
+              type: 
+                type: string
+                enum: *MODEL_TYPE
+              categoryType: 
+                type: string
+                enum: *MODEL_TYPE
+              fullPath:
+                type: string
+              count:
+                type: number
+                description: 'The total no of data sets in this category and its children'
+              commitId:
+                type: string
+              commitMessage:
+                type: string
+              commitTimestamp:
+                type: number
+              deleted:
+                type: boolean
+                description: 'Indicates if the category is deleted or not'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Commit not found'
+  /ws/public/browse/categoryInfo/{group}/{repo}:
+    get:
+      tags:
+      - 'Browse'
+      summary: 'Get category info'
+      description: 'Get meta data for display in browsing page'
+      operationId: 'getCategoryInfo'
+      produces:
+      - application/json
+      parameters:
+        - $ref: '#/parameters/group'
+        - $ref: '#/parameters/repo'
+        - $ref: '#/parameters/commitId'
+        - name: 'categoryPath'
+          description: 'The full category path for the current category'
+          in: query
+          type: string
+      responses:
+        200:
+          description: 'Returns display info for the given category'
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              category:
+                type: array
+                items:
+                  type: string
+              deleted:
+                type: boolean
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Category of commit not found'
+  /ws/public/browse/{group}/{repo}/{type}/{refId}:
+    get:
+      tags:
+      - 'Browse'
+      summary: 'Get data'
+      description: 'Loads a data set for displaying in frontend'
+      operationId: 'getDataset'
+      produces:
+      - application/json
+      parameters:
+        - $ref: '#/parameters/group'
+        - $ref: '#/parameters/repo'
+        - $ref: '#/parameters/type'
+        - $ref: '#/parameters/refId'
+        - $ref: '#/parameters/commitId'
+      responses:
+        200:
+          description: 'Returns the data set in JSON-LD format, specially prepared for the data set browsing view'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Commit not found'
   /ws/public/search:
     get:
       tags:
@@ -2687,7 +3164,7 @@ paths:
       - application/octet-stream
       responses:
         200:
-          description: 'Returns the avatar for {group} as byte array'
+          description: 'Returns the avatar for {username} as byte array'
         401:
           $ref: '#/responses/NotLoggedIn'
         404:
@@ -2835,6 +3312,1340 @@ paths:
           $ref: '#/responses/NotUserManager'
         404:
           description: '{username} not found'
+  /ws/team:
+    get:
+      tags:
+      - 'Team'
+      summary: 'Get teams'
+      description: 'Loads a list of team descriptors'
+      operationId: 'getTeams'
+      parameters:
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
+      - name: 'module'
+        in: query
+        type: string
+        description: If set, returns the raw results without paging
+      responses:
+        200:
+          description: 'Returns a (paged) list of teams'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+  /ws/team/avatar/{teamname}:
+    get:
+      tags: 
+      - 'Team'
+      summary: 'Get a teams avatar'
+      description: 'Loads the avatar of {teamname}'
+      operationId: 'getTeamAvatar'
+      parameters:
+      - $ref: '#/parameters/teamname'
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: 'Returns the avatar for {teamname} as byte array'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          $ref: '#/responses/TeamNotFound'
+    put:
+      tags: 
+      - 'Team'
+      summary: 'Set team avatar'
+      description: 'Sets the avatar of {teamname}'
+      operationId: 'setTeamAvatar'
+      parameters:
+      - $ref: '#/parameters/teamname'
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: 'After successful update, returns the changed avatar'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/TeamNotFound'
+  /ws/usermanager/team/{teamname}:
+    get:
+      tags: 
+      - 'Team'
+      summary: 'Get a team'
+      description: 'Loads {teamname}'
+      operationId: 'getTeam'
+      parameters:
+      - $ref: '#/parameters/teamname'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns team {teamname}'
+          schema:
+            $ref: '#/definitions/Team'
+        400:
+          description: 'Missing input or invalid teamname'    
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          $ref: '#/responses/TeamNotFound'
+    post:
+      tags: 
+      - 'Team'
+      summary: 'Create a new team'
+      description: 'Create a new team {teamname}. For this operation the client needs special permission to manage user'
+      operationId: 'createTeam'
+      parameters:
+      - $ref: '#/parameters/teamname'
+      - name: 'body'
+        description: 'The information of the team to create'
+        in: body
+        schema:
+          $ref: '#/definitions/Team'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        201:
+          description: 'Team was successfully created'
+          schema:
+            $ref: '#/definitions/Team'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        400:
+          description: 'Missing input or invalid teamname'    
+    put:
+      tags: 
+      - 'Team'
+      summary: 'Update a team'
+      description: 'Updates {teamname}'
+      operationId: 'updateTeam'
+      parameters:
+      - $ref: '#/parameters/teamname'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'After successful update, returns the changed team'
+          schema:
+            $ref: '#/definitions/Team'
+        400:
+          description: 'Missing input'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          $ref: '#/responses/TeamNotFound'
+    delete:
+      tags: 
+      - 'Team'
+      summary: 'Delete a team'
+      description: 'Deletes {teamname}. For this operation the client needs special permission to manage user'
+      operationId: 'deleteTeam'
+      parameters:
+      - $ref: '#/parameters/teamname'
+      responses:
+        200:
+          description: 'Team was successfully deleted'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+        404:
+          description: '{teamname} not found'
+  /ws/task/general:
+    get:
+      tags:
+      - Tasks
+      summary: 'Get all tasks'
+      description: 'Lists all tasks of the current user'
+      operationId: 'getTasks'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns all tasks for the current user'
+          schema:
+            type: object
+            properties:
+              canCreateTasks:
+                type: boolean
+              tasks:
+                type: array
+                items:
+                  $ref: '#/definitions/Task'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/:
+    post:
+      tags:
+      - Tasks
+      summary: 'Start a review'
+      description: 'Starts a new review'
+      operationId: 'startReview'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: 'body'
+        in: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/Review'
+      responses:
+        200:
+          description: 'Returns the review after creating it'
+          schema:
+            $ref: '#/definitions/Review'
+        400:
+          description: 'Invalid data'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}:
+    get:
+      tags:
+      - Tasks
+      summary: 'Get a review'
+      description: 'Loads review with {id}'
+      operationId: 'getReview'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the review with {id}'
+          schema:
+            $ref: '#/definitions/Review'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+    put:
+      tags:
+      - Tasks
+      summary: 'Update a review'
+      description: 'Updates the review with {id}'
+      operationId: 'updateReview'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/references:
+    put:
+      tags:
+      - Tasks
+      summary: 'Set review references'
+      description: 'Sets the references for the given review'
+      operationId: 'setReviewReferences'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      - name: 'body'
+        in: 'body'
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/ReviewReference'
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        400:
+          description: 'References can not be changed after reviewer were already assigned'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/complete:
+    put:
+      tags:
+      - Tasks
+      summary: 'Complete the review'
+      description: 'Completes the review'
+      operationId: 'completeReview'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/cancel:
+    put:
+      tags:
+      - Tasks
+      summary: 'Cancel the review'
+      description: 'Cancels the review'
+      operationId: 'cancelReview'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/assign/{username}:
+    put:
+      tags:
+      - Tasks
+      summary: 'Assign a user to the review task'
+      description: 'Assigns a user to the review task'
+      operationId: 'assignTask'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      - name: 'username'
+        type: 'string'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/complete/{username}:
+    put:
+      tags:
+      - Tasks
+      summary: 'Complete a task assignment'
+      description: 'Completes a task assignment'
+      operationId: 'completedTaskAssignment'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      - name: 'username'
+        type: 'string'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/cancel/{username}:
+    put:
+      tags:
+      - Tasks
+      summary: 'Cancel task assignment'
+      description: 'Canceles a task assignment'
+      operationId: 'cancelTaskAssignment'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      - name: 'username'
+        type: 'string'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/task/review/{id}/markAsReviewed/{referenceId}/{value} :
+    put:
+      tags:
+      - Tasks
+      summary: 'Mark a reference as reviewed'
+      description: 'Marks a reference as reviewed'
+      operationId: 'markAsReviewed'
+      produces:
+      - application/json
+      parameters:
+      - name: 'id'
+        type: 'number'
+        in: 'path'
+        required: true
+      - name: 'referenceId'
+        type: 'string'
+        in: 'path'
+        required: true
+      - name: 'value'
+        type: 'boolean'
+        in: 'path'
+        required: true
+      responses:
+        200:
+          description: 'Returns the no of active tasks'
+          schema:
+            type: object
+            properties:
+              activeTasks:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Review with {id} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{group}/{repo}:
+    get:
+      tags:
+      - 'Comment'
+      summary: 'Get repository comments'
+      description: 'Loads a list of all comments made in the repository'
+      operationId: 'getRepositoryComments'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/pageSize'
+      - $ref: '#/parameters/filter'
+      - name: 'includeReplies'
+        type: 'boolean'
+        in: 'query'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a paged result list of comments in the repository'
+          schema: 
+            $ref: '#/definitions/CommentSearchResult'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{group}/{repo}/{type}/{refId}:
+    get:
+      tags:
+      - 'Comment'
+      summary: 'Get data set comments'
+      description: 'Loads a list of all comments made on the data set'
+      operationId: 'getDatasetComments'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - $ref: '#/parameters/commitId'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of comments for the data set'
+          schema: 
+            type: object
+            properties:
+              canComment:
+                type: boolean
+                description: 'If the current user can comment in this repository'
+              canApprove:
+                type: boolean
+                description: 'If the current user can approve comments in this repository'
+              comments:
+                type: array
+                items:
+                  $ref: '#/definitions/Comment'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{id}/replies:
+    get:
+      tags:
+      - 'Comment'
+      summary: 'Get replies to a comment'
+      description: 'Loads a list of all replies to a comment'
+      operationId: 'getReplies'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of replies to a comment'
+          schema: 
+            type: array
+            items:
+              $ref: '#/definitions/Comment'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoReadPerm'
+        404:
+          description: '{group}/{repo} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{group}/{repo}/{type}/{refId}/{commitId}:
+    post:
+      tags:
+      - 'Comment'
+      summary: 'Add a comment'
+      description: 'Creates a new comment'
+      operationId: 'createComment'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - $ref: '#/parameters/type'
+      - $ref: '#/parameters/refId'
+      - name: 'commitId'
+        in: 'path'
+        required: true
+        type: string
+      - name: 'body'
+        in: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/Comment'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Return the comment'
+          schema: 
+            $ref: '#/definitions/Comment'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoCommentPerm'
+        404:
+          description: '{group}/{repo} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{id}:
+    put:
+      tags:
+      - 'Comment'
+      summary: 'Update a comment'
+      description: 'Updates a new comment'
+      operationId: 'updateComment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        required: true
+        type: number
+      - name: 'body'
+        in: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/Comment'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Return the comment'
+          schema: 
+            $ref: '#/definitions/Comment'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoCommentPerm'
+        404:
+          description: '{group}/{repo} or comment {id} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+    delete:
+      tags:
+      - 'Comment'
+      summary: 'Delete a comment'
+      description: 'Deletes a comment'
+      operationId: 'deleteComment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        required: true
+        type: number
+      responses:
+        200:
+          description: 'Comment successfully deleted'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoCommentPerm'
+        404:
+          description: '{group}/{repo} or comment {id} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{id}/release:
+    put:
+      tags:
+      - 'Comment'
+      summary: 'Release a comment'
+      description: 'Releases a new comment'
+      operationId: 'releaseComment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Return the comment'
+          schema: 
+            $ref: '#/definitions/Comment'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoCommentPerm'
+        404:
+          description: '{group}/{repo} or comment {id} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/comment/{id}/visibility/{role}:
+    put:
+      tags:
+      - 'Comment'
+      summary: 'Change visibility of a comment'
+      description: 'Changes the visibility of a comment'
+      operationId: 'changeCommentVisibility'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        required: true
+        type: number
+      - name: 'role'
+        in: 'path'
+        required: true
+        type: string
+        enum: *ROLES
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Return the comment'
+          schema: 
+            $ref: '#/definitions/Comment'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NoCommentPerm'
+        404:
+          description: '{group}/{repo} or comment {id} not found'
+        406:
+          $ref: '#/responses/UnsupportedSchema'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/messaging:
+    get:
+      tags:
+      - 'Messaging'
+      summary: 'Get conversations'
+      description: 'Collects all messages and groups them by the recipient'
+      operationId: 'getConversations'
+      responses:
+        200:
+          description: 'Returns a list of conversations'
+          schema: 
+            type: object
+            properties:
+              recipient:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    items:
+                      type: string
+                      enum: ['team', 'user']
+                  id:
+                    type: string
+                    description: 'Teamname or username'
+              messages:
+                type: array
+                items:
+                  $ref: '#/definitions/Message'
+              unreadMessages:
+                type: number
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/messaging/user/{username}:
+    get:
+      tags:
+      - 'Messaging'
+      summary: 'Get messages from a user'
+      description: 'Collects the last 20 messages from a user {username}'
+      operationId: 'getUserMessages'
+      parameters:
+      - name: 'username'
+        type: string
+        required: true
+        in: 'path'
+      - name: 'before'
+        type: number
+        in: 'query'
+        description: 'Start loading messages before this time'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of the last 20 messages'
+          schema: 
+            $ref: '#/definitions/Message'
+        204:
+          description: 'User was blocked by recipient or has no messages'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/messaging/team/{teamname}:
+    get:
+      tags:
+      - 'Messaging'
+      summary: 'Get messages from a team'
+      description: 'Collects the last 20 messages from a team {teamname}'
+      operationId: 'getTeamMessages'
+      parameters:
+      - name: 'teamname'
+        type: string
+        required: true
+        in: 'path'
+      - name: 'before'
+        type: number
+        in: 'query'
+        description: 'Start loading messages before this time'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of 20 messages'
+          schema: 
+            $ref: '#/definitions/Message'
+        204:
+          description: 'No more messages found'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/messaging/settings:
+    put:
+      tags:
+      - 'Messaging'
+      summary: 'Update messaging settings'
+      description: 'Updates the current users messaging settings'
+      operationId: 'updateMessageSettings'
+      parameters:
+      - name: 'body'
+        in: 'body'
+        schema:
+          type: object
+          properties:
+            messagingEnabled:
+              type: boolean
+            messagingRestricted:
+              type: boolean
+            showOnlineStatus:
+              type: boolean
+            showReadReceipt:
+              type: boolean
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the current users updated messaging settings'
+          schema: 
+            type: object
+            properties:
+              messagingEnabled:
+                type: boolean
+              messagingRestricted:
+                type: boolean
+              showOnlineStatus:
+                type: boolean
+              showReadReceipt:
+                type: boolean
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/messaging/block/{username}:
+    put:
+      tags:
+      - 'Messaging'
+      summary: 'Block a user from messaging the current user'
+      description: 'Updates the list of blocked users for the current user'
+      operationId: 'blockUser'
+      parameters:
+      - name: 'username'
+        required: true
+        type: string
+        in: 'path'
+      responses:
+        200:
+          description: 'User successfully blocked from messaging'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'User {username} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/messaging/unblock/{username}:
+    put:
+      tags:
+      - 'Messaging'
+      summary: 'Unblock a user from messaging the current user'
+      description: 'Updates the list of blocked users for the current user'
+      operationId: 'unblockUser'
+      parameters:
+      - name: 'username'
+        type: string
+        required: true
+        in: 'path'
+      responses:
+        200:
+          description: 'User successfully unblocked from messaging'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'User {username} not found'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/changelog/{group}/{repo}:
+    get:
+      tags:
+      - 'ChangeLog'
+      summary: 'Requests the creation of a change log'
+      description: 'Renders commit and data set views for each changed data set and returns a download token'
+      operationId: 'requestChangeLog'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      produces:
+      - plain/text
+      responses:
+        200:
+          description: 'Returns a download token'
+          schema: 
+            type: string
+        400:
+          description: 'Error during rendering'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+  /ws/changelog/{group}/{repo}/{commitId}:
+    get:
+      tags:
+      - 'ChangeLog'
+      summary: 'Requests the creation of a change log'
+      description: 'Renders commit and data set views for each changed data set and returns a download token'
+      operationId: 'requestChangeLogForCommit'
+      parameters:
+      - $ref: '#/parameters/group'
+      - $ref: '#/parameters/repo'
+      - name: 'commitId'
+        required: true
+        in: 'path'
+        type: string
+        description: 'The commit id to create a change log for'
+      produces:
+      - plain/text
+      responses:
+        200:
+          description: 'Returns a download token'
+          schema: 
+            type: string
+        400:
+          description: 'Error during rendering'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+  /ws/changelog/{token}:
+    get:
+      tags:
+      - 'ChangeLog'
+      summary: 'Download a previously created change log'
+      description: 'Retrieves the generated change log and deletes it after returning it'
+      operationId: 'downloadChangeLog'
+      parameters:
+      - name: 'token'
+        required: true
+        in: 'path'
+        type: string
+        description: 'The download token returned by the create request'
+      produces:
+      - application/octet-stream
+      responses:
+        200:
+          description: 'Returns a zip file containing the change log files'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        404:
+          description: 'Token not found'
+  /ws/admin/area/testGladConfig:
+    get:
+      tags:
+      - 'AdminArea'
+      summary: 'Test GLAD config'
+      description: 'Makes a test call to the configured GLAD node'
+      operationId: 'testGladConfig'
+      responses:
+        200:
+          description: 'Node configured correctly'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+        500:
+          description: 'Node unavailable'
+  /ws/admin/area/testSearchConfig:
+    get:
+      tags:
+      - 'AdminArea'
+      summary: 'Test Search config'
+      description: 'Makes a test call to elasticsearch'
+      operationId: 'testSearchConfig'
+      responses:
+        200:
+          description: 'Elasticsearch configured correctly'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+        500:
+          description: 'Elasticsearch unavailable'
+  /ws/admin/area/testMailConfig/{email}:
+    get:
+      tags:
+      - 'AdminArea'
+      summary: 'Test Mail config'
+      description: 'Sends a test mail to the given email address'
+      operationId: 'testMailConfig'
+      parameters:
+      - name: 'email'
+        type: string
+        in: path
+        required: true
+      responses:
+        200:
+          description: 'In any case, success can be determined by receiving the test email'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/admin/area/serverInfo:
+    get:
+      tags:
+      - 'AdminArea'
+      summary: 'Get Server Info'
+      description: 'Loads meta data of the server'
+      operationId: 'getServerInfo'
+      responses:
+        200:
+          description: 'Returns meta data of the server'
+          schema:
+            type: object
+            properties:
+              maintenanceModeActive:
+                type: boolean
+              maintenanceMessage:
+                type: string
+              openWebServiceRequests:
+                type: number
+              announcement:
+                type: string
+              licenseAgreementText:
+                type: string
+              homeTitle:
+                type: string
+              homeText:
+                type: string
+              orderedRepositories:
+                type: array
+                items:
+                  type: string
+              hiddenRepositories:
+                type: array
+                items:
+                  type: string
+              orderedModelTypes:
+                type: array
+                items:
+                  type: string
+                  enum: *MODEL_TYPE
+              hiddenModelTypes:
+                type: array
+                items:
+                  type: string
+                  enum: *MODEL_TYPE
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/admin/area/clearIndex:
+    put:
+      tags:
+      - 'AdminArea'
+      summary: 'Clear search index'
+      description: 'Clears the complete search index'
+      operationId: 'clearIndex'
+      responses:
+        200:
+          description: 'Successfully cleared search index'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/admin/area/reindex:
+    put:
+      tags:
+      - 'AdminArea'
+      summary: 'Reindex search'
+      description: 'Clears the current search index and reindexes all repositories'
+      operationId: 'reindex'
+      responses:
+        200:
+          description: 'Successfully reindexed search index'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/admin/area/reindex/{group}/{repo}:
+    put:
+      tags:
+      - 'AdminArea'
+      summary: 'Reindex search for repository'
+      description: 'Reindexes a single repository'
+      operationId: 'reindexRepository'
+      parameters:
+        - $ref: '#/parameters/group'
+        - $ref: '#/parameters/repo'
+      responses:
+        200:
+          description: 'Successfully reindexed the given repository'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+        404:
+          description: 'Repository not found'
+  /ws/admin/area/announce:
+    put:
+      tags:
+      - 'AdminArea'
+      summary: 'Set announcentment'
+      description: 'Sets a server wide announcement text'
+      operationId: 'setAnnouncement'
+      consumes:
+      - text/plain
+      parameters:
+      - name: 'body'
+        required: true
+        in: 'body'
+        schema:
+          type: string
+      responses:
+        200:
+          description: 'Successfully set announcement text'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/admin/area/settings:
+    put:
+      tags:
+      - 'AdminArea'
+      summary: 'Set a server setting'
+      description: 'Sets a server setting'
+      operationId: 'setServerSetting'
+      consumes:
+      - application/json
+      parameters:
+      - name: 'body'
+        required: true
+        in: 'body'
+        schema:
+          type: object
+          properties:
+            key:
+              type: string
+              description: 'The settings key'
+            value:
+              type: string
+              description: 'The settings value'
+      responses:
+        200:
+          description: 'Successfully set announcement text'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/admin/area/clearAnnouncement:
+    put:
+      tags:
+      - 'AdminArea'
+      summary: 'Clear announcentment'
+      description: 'Clears the server wide announcement text'
+      operationId: 'clearAnnouncement'
+      responses:
+        200:
+          description: 'Successfully cleared announcement text'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          description: 'Not an admin user'
+  /ws/usermanager/area/count:
+    get:
+      tags:
+      - 'UserManagerArea'
+      summary: 'Load data counts'
+      description: 'Loads the total no of users and teams, and repositories and groups if also data manager'
+      operationId: 'getCounts'
+      responses:
+        200:
+          description: 'Counts for users, teams, repositories and groups'
+          schema:
+            type: object
+            properties:
+              repositories:
+                description: 'The total no of repositories'
+                type: string
+              groups:
+                description: 'The total no of groups'
+                type: string
+              users:
+                description: 'The total no of users'
+                type: string
+              teams:
+                description: 'The total no of teams'
+                type: string
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotUserManager'
+  /ws/datamanager/library:
+    get:
+      tags: 
+      - 'Library'
+      summary: 'Get libraries'
+      description: 'Loads library descriptors'
+      operationId: 'getLibraries'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of library descriptors'
+          schema:
+            type: object
+            properties:
+              name:
+                description: 'The name of the library'
+                type: string
+              count:
+                description: 'The no of ref ids of this library'
+                type: string
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotDataManager'
+  /ws/datamanager/library/{name}:
+    get:
+      tags:
+      - 'Library'
+      summary: 'Get library'
+      description: 'Loads a list of reference ids represented by the library'
+      operationId: 'getLibraryRefIds'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of reference ids'
+          schema:
+            type: array
+            items:
+              type: string
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotDataManager'
+        404:
+          $ref: 'Library {name} not found'
+    put:
+      tags:
+      - 'Library'
+      summary: 'Update library'
+      description: 'Sets a list of reference ids represented by the library'
+      operationId: 'updateLibrary'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of reference ids'
+        400:
+          description: 'Invalid library name'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotDataManager'
+        404:
+          $ref: 'Library {name} not found'
+      parameters:
+        - name: 'body'
+          required: true
+          description: 'A list of reference ids'
+          in: body
+          schema:
+            type: array
+            items: 
+              type: string
+    delete:
+      tags:
+      - 'Library'
+      summary: 'Delete library'
+      description: 'Deletes the specified library'
+      operationId: 'deleteLibrary'
+      responses:
+        200:
+          description: 'Library was deleted successfully'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        403:
+          $ref: '#/responses/NotDataManager'
+        404:
+          $ref: 'Library {name} not found'
+    parameters:
+      - name: 'name'
+        required: true
+        description: 'The name of the library'
+        in: path
+        type: string
   /ws/datamanager/glad/push/{group}/{repo}:
     post:
       tags: 
@@ -2849,7 +4660,16 @@ paths:
         description: 'The elements to export, if an element is a category, all children will be collected and exported'
         in: body
         schema:
-          $ref: '#/definitions/GLADInput'
+          type: object
+          properties:
+            dataprovider:
+              description: 'The name of the data provider of the selected data sets (will be used in GLAD)'
+              type: string
+              example: 'GreenDelta GmbH'
+            references:
+              type: array
+              items:
+                $ref: '#/definitions/Reference'
       consumes:
       - application/json
       responses:
@@ -2858,8 +4678,263 @@ paths:
         401:
           $ref: '#/responses/NotLoggedIn'
         403:
-          description: 'Not a data manager'
+          $ref: '#/responses/NotDataManager'
         404:
           $ref: '#/responses/RepoNotFound'
         503:
           description: 'Invalid GLAD node configuration, contact data manager or administrator'
+  /ws/activities:
+    get:
+      tags:
+      - 'Activities'
+      summary: 'Get activities'
+      description: 'Loads paged task, comment and commit activities of repositories the current user has access to'
+      operationId: 'getActivities'
+      produces:
+      - application/json
+      parameters:
+        - $ref: '#/parameters/page'
+        - $ref: '#/parameters/pageSize'
+        - name: 'repositoryPath'
+          description: 'The full repository path'
+          in: query
+          type: string
+        - name: 'showCommitActivities'
+          in: query
+          type: boolean
+        - name: 'showCommentActivities'
+          in: query
+          type: boolean
+        - name: 'showTaskActivities'
+          in: query
+          type: boolean
+      responses:
+        200:
+          description: 'Returns activities of all repositories the current user has access to'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: array
+                  items: 
+                    type: string
+                    enum: [COMMIT, COMMENT, TASK_STARTED, TASK_COMPLETED, TASK_CANCELED, TASK_ASSIGNED, TASK_ASSIGNMENT_COMPLETED, TASK_ASSIGNMENT_CANCELED]
+                timestamp:
+                  type: number
+                  description: 'The timestamp of the activity'
+                id: 
+                  type: number
+                  description: 'The of the underlying activity object (commit, comment, task)'
+                repositoryPath:
+                  type: string
+                  description: 'The id of the repository the activity took place in'
+                label:
+                  type: string
+                  description: 'The label of the repository the activity took place in'
+                message:
+                  type: string
+                  description: 'Commit message or comment text'
+                user:
+                  type: string
+                  description: 'The acting user'
+                userDisplayName:
+                  type: string
+                  description: 'The display name of the acting user (in case of a comment or task)'
+                field:
+                  type: string
+                  description: 'The field the comment is refering to'
+                reply:
+                  type: boolean
+                  description: 'True if the comment has a reply, false otherwise'
+                taskType:
+                  type: array
+                  items:
+                    type: string
+                    enum: [REVIEW]
+                assignedTo:
+                  type: string
+                  description: 'The username of the user the task was assigned to'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/activities/settings:
+    put:
+      tags:
+      - 'Activities'
+      summary: 'Set user activity settings'
+      description: 'Updates the settings for activities for the currrent user'
+      operationId: 'setActivitySettings'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the activity settings for the current user'
+          schema:
+            type: object
+            properties:
+              showTaskActivities:
+                type: boolean
+              showCommentActivities:
+                type: boolean
+              showCommitActivities:
+                type: boolean
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/notifications:
+    get:
+      tags:
+      - 'Notifications'
+      summary: Get all enabled notifications
+      description: Filters all notifications for the ones the user has enabled
+      operationId: getEnabledNotifications
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns all enabled notifications for the current user'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/notifications/enable/{notifications}:
+    put:
+      tags:
+      - 'Notifications'
+      summary: Enable notifications
+      description: Enables the specified notifications
+      operationId: enableNotifications
+      parameters:
+      - name: 'notifications'
+        in: 'path'
+        required: true
+        type: string
+        description: 'Comma separated list of notifications'
+      responses:
+        200:
+          description: 'Notifications successfully enabled'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/notifications/disable/{notifications}:
+    put:
+      tags:
+      - 'Notifications'
+      summary: Disable notifications
+      description: Disables the specified notifications
+      operationId: disableNotifications
+      parameters:
+      - name: 'notifications'
+        in: 'path'
+        required: true
+        type: string
+        description: 'Comma separated list of notifications'
+      responses:
+        200:
+          description: 'Notifications successfully disabled'
+        401:
+          $ref: '#/responses/NotLoggedIn'
+        503:
+          $ref: '#/responses/ServiceNotEnabled'
+  /ws/public/settings:
+    get:
+      tags:
+      - 'Settings'
+      summary: 'Get server settings'
+      description: 'Loads server settings'
+      operationId: 'getSettings'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'If user is admin a list of all server settings is returned, otherwise only public settings are returned'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                value:
+                  type: string        
+  /ws/public/announcements:
+    get:
+      tags:
+      - 'Announcements'
+      summary: 'Get the current announcement text'
+      description: 'Loads the current announcement text'
+      operationId: 'getAnnouncement'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the current announcement text with a unique id, so clients can remember if they already have shown the current announcement text'
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              message:
+                type: string
+  /ws/public/config/userRoutes:
+    get:
+      tags:
+      - 'Config'
+      summary: 'Get user routes'
+      description: 'Loads a list of all routes restricted for logged in users'
+      operationId: 'getUserRoutes'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns a list of all routes restricted for logged in users'
+          schema:
+            type: array
+            items:
+              type: string
+  /ws/public/imprint:
+    get:
+      tags:
+      - 'Imprint'
+      summary: 'Load imprint'
+      description: 'Loads the imprint information for this server instance'
+      operationId: 'loadImprint'
+      produces:
+      - application/json
+      responses:
+        200:
+          description: 'Returns the imprint information'
+          schema:
+            type: object
+            properties:
+              company:
+                type: string
+              ceo:
+                type: string
+              street:
+                type: string
+              zipCode:
+                type: string
+              city:
+                type: string
+              country:
+                type: string
+              phone:
+                type: string
+              fax:
+                type: string
+              email:
+                type: string
+              website:
+                type: string
+              registration:
+                type: string
+              vat:
+                type: string
